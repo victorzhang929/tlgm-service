@@ -16,38 +16,38 @@ import static com.cetiti.tlgm.service.performance.constant.PerformanceConstant.M
 @Data
 public class BasicDataMaintenancePerformance extends BasePerformance implements Serializable {
 
-    private ResidencePerformance residencePerformance = new ResidencePerformance();
-    private RealPopulationPerformance realPopulationPerformance = new RealPopulationPerformance();
-    private EntOrgPerformance entOrgPerformance = new EntOrgPerformance();
-    private KeyUnitPerformance keyUnitPerformance = new KeyUnitPerformance();
-    private KeySitePerformance keySitePerformance = new KeySitePerformance();
-    private KeyFacilitiesPerformance keyFacilitiesPerformance = new KeyFacilitiesPerformance();
+    private ResidencePerformance residence;
+    private RealPopulationPerformance realPopulation;
+    private EntOrgPerformance entOrg;
+    private KeySitePerformance keySite;
+    private KeyUnitPerformance keyUnit;
+    private KeyFacilitiesPerformance keyFacilities;
 
     /**
      * 计算基础数据维护增长总数
      */
     private void calcIncreaseNum() {
-        increaseNum = residencePerformance.getIncreaseNum() + realPopulationPerformance.getIncreaseNum()
-                + entOrgPerformance.getIncreaseNum() + keyUnitPerformance.getIncreaseNum()
-                + keySitePerformance.getIncreaseNum() + keyFacilitiesPerformance.getIncreaseNum();
+        increaseNum = residence.getIncreaseNum() + realPopulation.getIncreaseNum()
+                + entOrg.getIncreaseNum() + keyUnit.getIncreaseNum()
+                + keySite.getIncreaseNum() + keyFacilities.getIncreaseNum();
     }
 
     /**
      * 计算基础数据维护修改总数
      */
     private void calcModificationNum() {
-        modificationNum = residencePerformance.getModificationNum() + realPopulationPerformance.getModificationNum()
-                + entOrgPerformance.getModificationNum() + keyUnitPerformance.getModificationNum()
-                + keySitePerformance.getModificationNum() + keyFacilitiesPerformance.getModificationNum();
+        modificationNum = residence.getModificationNum() + realPopulation.getModificationNum()
+                + entOrg.getModificationNum() + keyUnit.getModificationNum()
+                + keySite.getModificationNum() + keyFacilities.getModificationNum();
     }
 
     /**
      * 计算基础数据维护审核总数
      */
     private void calcCheckNum() {
-        checkNum = residencePerformance.getCheckNum() + realPopulationPerformance.getCheckNum()
-                + entOrgPerformance.getCheckNum() + keyUnitPerformance.getCheckNum()
-                + keySitePerformance.getCheckNum() + keyFacilitiesPerformance.getCheckNum();
+        checkNum = residence.getCheckNum() + realPopulation.getCheckNum()
+                + entOrg.getCheckNum() + keyUnit.getCheckNum()
+                + keySite.getCheckNum() + keyFacilities.getCheckNum();
     }
 
     /**
@@ -55,7 +55,7 @@ public class BasicDataMaintenancePerformance extends BasePerformance implements 
      */
     @Override
     public void calcTotalScore() {
-        calcCheckNum();
+        calcIncreaseNum();
         calcModificationNum();
         calcCheckNum();
         super.calcTotalScore();

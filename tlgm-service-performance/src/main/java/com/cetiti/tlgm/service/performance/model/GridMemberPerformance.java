@@ -16,17 +16,21 @@ import static com.cetiti.tlgm.service.common.CommonUtil.getDoubleScore;
  * @date 2018-06-27 15:38:01
  */
 @Data
-public class Performance extends FullTimeGridMember implements Serializable{
+public class GridMemberPerformance extends GridCommunityTownship implements Serializable{
 
     private BigDecimal id;
+    private BigDecimal userId;
+    private String name;
+    private String loginname;
+    private Integer count;
 
-    private DynamicEventReportPerformance dynamicEventReportPerformance = new DynamicEventReportPerformance();
-    private BasicDataMaintenancePerformance basicDataMaintenancePerformance = new BasicDataMaintenancePerformance();
+    private DynamicEventReportPerformance dynamic = new DynamicEventReportPerformance();
+    private BasicDataMaintenancePerformance basic = new BasicDataMaintenancePerformance();
 
     private Double totalScore;
 
     public void calcTotalScore() {
-        totalScore = dynamicEventReportPerformance.getTotalScore() + basicDataMaintenancePerformance.getTotalScore();
+        totalScore = dynamic.getTotalScore() + basic.getTotalScore();
     }
 
     public Double getTotalScore() {

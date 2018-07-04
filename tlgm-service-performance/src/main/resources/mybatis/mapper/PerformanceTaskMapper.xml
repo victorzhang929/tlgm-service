@@ -2,13 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cetiti.tlgm.service.performance.mapper.PerformanceTaskMapper">
 
-    <resultMap id="fullTimeGridMember" type="com.cetiti.tlgm.service.performance.model.FullTimeGridMember">
-        <id column="user_id" javaType="DECIMAL" property="userId" />
-        <result column="name" javaType="VARCHAR" property="name" />
-        <result column="loginname" javaType="VARCHAR" property="loginname" />
-        <result column="grid_id" javaType="DECIMAL" property="gridId" />
-        <result column="community_id" javaType="DECIMAL" property="communityId" />
-        <result column="township_id" javaType="DECIMAL" property="townshipId" />
+    <resultMap id="gridMemberPerformance" type="com.cetiti.tlgm.service.performance.model.GridMemberPerformance">
+        <id column="user_id" jdbcType="DECIMAL" property="userId" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="loginname" jdbcType="VARCHAR" property="loginname" />
+        <result column="grid_id" jdbcType="DECIMAL" property="gridId" />
+        <result column="community_id" jdbcType="DECIMAL" property="communityId" />
+        <result column="township_id" jdbcType="DECIMAL" property="townshipId" />
     </resultMap>
     
     <resultMap id="basePerformance" type="com.cetiti.tlgm.service.performance.model.quota.BasePerformance">
@@ -16,67 +16,100 @@
         <result column="modification_num" jdbcType="DECIMAL" property="modificationNum" />
         <result column="check_num" jdbcType="DECIMAL" property="checkNum" />
     </resultMap>
+
+    <sql id="getCurrentMonth">
+        (SELECT TO_CHAR(SYSDATE, 'YYYY-MM') FROM DUAL)
+    </sql>
     
-    <select id="listFullTimeGridMember" resultMap="fullTimeGridMember">
+    <select id="listGridMemberPerformance" resultMap="gridMemberPerformance">
         SELECT ID AS USER_ID, NAME, LOGINNAME, GRID_ID, COMMUNITY_ID, TOWNSHIP_ID
         FROM T_USER_INFO
         WHERE GRID_ID IS NOT NULL
-        AND STATUS = $(@com.cetiti.tlgm.service.common.constant.DatabaseConstant@VALID)
+        AND STATUS = ${@com.cetiti.tlgm.service.common.constant.DatabaseConstant@VALID}
     </select>
 
-    <insert id="insertWithoutPerformance" parameterType="com.cetiti.tlgm.service.performance.model.FullTimeGridMember">
+    <insert id="insertWithoutPerformance" parameterType="com.cetiti.tlgm.service.performance.model.GridMemberPerformance">
         INSERT INTO T_PERFORMANCE
         (ID, USER_ID, NAME, LOGINNAME, GRID_ID, GRID_NAME, COMMUNITY_ID, COMMUNITY_NAME, TOWNSHIP_ID, TOWNSHIP_NAME,
         CREATE_TIME, MODIFY_TIME)
         VALUES
-        (SEQ_PERFORMANCE_ID.NEXTVAL, #{userId}, #{name}, #{loginname}, #{gridId}, #{gridName}, #{communityId},
-        #{communityName}, #{townshipId}, #{townshipName}, SYSDATE, SYSDATE)
+        (SEQ_PERFORMANCE_ID.NEXTVAL, #{userId}, #{name, jdbcType = VARCHAR}, #{loginname, jdbcType = VARCHAR},
+        #{gridId, jdbcType = DECIMAL}, #{gridName, jdbcType = VARCHAR}, #{communityId, jdbcType = DECIMAL}, #{communityName, jdbcType = VARCHAR},
+        #{townshipId, jdbcType = DECIMAL}, #{townshipName, jdbcType = VARCHAR}, SYSDATE, SYSDATE)
     </insert>
+
+    <select id="listCurrentMonthUserId" resultType="java.math.BigDecimal">
+        SELECT USER_ID FROM T_PERFORMANCE WHERE TO_CHAR(CREATE_TIME, 'YYYY-MM') = <include refid="getCurrentMonth"/>
+    </select>
 
     <select id="countPerformance" resultMap="basePerformance">
         SELECT
-        COUNT(WHEN OPERATE_TYPE = ${@com.cetiti.tlgm.schedulingtask.constant.PerformanceConstant@INSERT} THEN 'INCREASE' END) INCREASE_NUM,
-        COUNT(WHEN OPERATE_TYPE = ${@com.cetiti.tlgm.schedulingtask.constant.PerformanceConstant@UPDATE} THEN 'MODIFICATION' END) MODIFICATION_NUM,
-        COUNT(WHEN OPERATE_TYPE = ${@com.cetiti.tlgm.schedulingtask.constant.PerformanceConstant@CHECK} THEN 'CHECK' END) CHECK_NUM
+        COUNT(CASE WHEN OPERATE_TYPE = ${@com.cetiti.tlgm.service.common.constant.DatabaseConstant@INSERT_TYPE} THEN 'INCREASE' END) INCREASE_NUM,
+        COUNT(CASE WHEN OPERATE_TYPE = ${@com.cetiti.tlgm.service.common.constant.DatabaseConstant@UPDATE_TYPE} THEN 'MODIFICATION' END) MODIFICATION_NUM,
+        COUNT(CASE WHEN OPERATE_TYPE = ${@com.cetiti.tlgm.service.common.constant.DatabaseConstant@CHECK_TYPE} THEN 'CHECK' END) CHECK_NUM
         FROM T_LOG_INFO
-        WHERE USER_ID = #{userId} AND MODULE_TYPE = #{moduleType} AND TO_CHAR(CREATE_TIME,'YYYY-MM') = #{currentMonth}
+        WHERE USER_ID = #{userId} AND MODULE_TYPE = #{moduleType} AND TO_CHAR(CREATE_TIME,'YYYY-MM') = <include refid="getCurrentMonth"/>
     </select>
     
     <delete id="batchDeleteUserIds">
         DELETE FROM T_PERFORMANCE
         WHERE TO_CHAR(CREATE_TIME,'YYYY-MM') = #{currentMonth} AND USER_ID IN
         <foreach collection="userIds" index="index" item="userId" open="(" close=")" separator=",">
-            #{userId, jdbcType = DECIMAL}
+            #{userId}
         </foreach>
     </delete>
     
-    <insert id="saveOrUpdate">
+    <insert id="saveOrUpdate" parameterType="com.cetiti.tlgm.service.performance.model.GridMemberPerformance">
         <selectKey keyProperty="count" resultType="int" order="BEFORE">
-            SELECT COUNT(USER_ID) FROM T_PERFORMANCE WHERE USER_ID = #{userId, jdbcType = DECIMAL} AND TO_CHAR(CREATE_TIME,'YYYY-MM') = #{currentMonth, jdbcType = VARCHAR}
+            SELECT COUNT(USER_ID) FROM T_PERFORMANCE WHERE USER_ID = #{userId} AND TO_CHAR(CREATE_TIME,'YYYY-MM') = <include refid="getCurrentMonth"/>
         </selectKey>
         <if test="count > 0">
-
+            UPDATE T_PERFORMANCE
+            SET NAME = #{name, jdbcType = VARCHAR}, LOGINNAME = #{loginname, jdbcType = VARCHAR}, EFFECT_NUM = #{dynamic.effectNumber},
+            EFFECT_SCORE = #{dynamic.effectScore}, DYNAMIC_NUM = #{dynamic.dynamicNumber}, DYNAMIC_SCORE = #{dynamic.dynamicScore},
+            OTHER_NUM = #{dynamic.otherNumber}, ND_EFFECTIVE_NUM = #{dynamic.ndEffectiveNumber}, DYNAMIC_EVENT_TOTAL_NUM = #{dynamic.totalNumber},
+            DYNAMIC_EVENT_TOTAL_SCORE = #{dynamic.totalScore}, RESIDENCE_INCREASE_NUM = #{basic.residence.increaseNum},
+            RESIDENCE_MODIFICATION_NUM = #{basic.residence.modificationNum}, RESIDENCE_CHECK_NUM = #{basic.residence.checkNum},
+            RESIDENCE_TOTAL_SCORE = #{basic.residence.totalScore}, REAL_POP_INCREASE_NUM = #{basic.realPopulation.increaseNum},
+            REAL_POP_MODIFICATION_NUM = #{basic.realPopulation.modificationNum}, REAL_POP_CHECK_NUM = #{basic.realPopulation.checkNum},
+            REAL_POP_TOTAL_SCORE = #{basic.realPopulation.totalScore}, ENT_ORG_INCREASE_NUM = #{basic.entOrg.increaseNum},
+            ENT_ORG_MODIFICATION_NUM = #{basic.entOrg.modificationNum}, ENT_ORG_CHECK_NUM = #{basic.entOrg.checkNum},
+            ENT_ORG_TOTAL_SCORE = #{basic.entOrg.totalScore}, KEY_SITE_INCREASE_NUM = #{basic.keySite.increaseNum},
+            KEY_SITE_MODIFICATION_NUM =  #{basic.keySite.modificationNum}, KEY_SITE_CHECK_NUM =  #{basic.keySite.checkNum},
+            KEY_SITE_TOTAL_SCORE =  #{basic.keySite.totalScore}, KEY_UNIT_INCREASE_NUM = #{basic.keyUnit.increaseNum},
+            KEY_UNIT_MODIFICATION_NUM = #{basic.keyUnit.modificationNum}, KEY_UNIT_CHECK_NUM = #{basic.keyUnit.checkNum},
+            KEY_UNIT_TOTAL_SCORE = #{basic.keyUnit.totalScore}, KEY_FACI_INCREASE_NUM = #{basic.keyFacilities.increaseNum},
+            KEY_FACI_MODIFICATION_NUM = #{basic.keyFacilities.modificationNum}, KEY_FACI_CHECK_NUM = #{basic.keyFacilities.checkNum},
+            KEY_FACI_TOTAL_SCORE = #{basic.keyFacilities.totalScore}, BASIC_DATA_INCREASE_NUM = #{basic.increaseNum},
+            BASIC_DATA_MODIFICATION_NUM = #{basic.modificationNum}, BASIC_DATA_CHECK_NUM = #{basic.checkNum}, BASIC_DATA_TOTAL_SCORE = #{basic.totalScore},
+            TOTAL_SCORE = #{totalScore}, MODIFY_TIME = SYSDATE, GRID_ID = #{gridId, jdbcType = DECIMAL}, GRID_NAME = #{gridName, jdbcType = VARCHAR},
+            COMMUNITY_ID = #{communityId, jdbcType = DECIMAL}, COMMUNITY_NAME = #{communityName, jdbcType = VARCHAR},
+            TOWNSHIP_ID = #{townshipId, jdbcType = DECIMAL}, TOWNSHIP_NAME = #{townshipName, jdbcType = VARCHAR}
+            WHERE USER_ID = #{userId} AND TO_CHAR(CREATE_TIME,'YYYY-MM') = <include refid="getCurrentMonth"/>
         </if>
         <if test="count == 0">
             INSERT INTO T_PERFORMANCE
-            (ID, USER_ID, NAME, LOGINNAME, EFFECT_NUM, EFFECT_SCORE, DYNAMIC_NUM, DYNAMIC_SCORE, DYNAMIC_EVENT_TOTAL_NUM,
-            DYNAMIC_EVENT_TOTAL_SCORE, RESIDENCE_INCREASE_NUM, RESIDENCE_MODIFICATION_NUM, RESIDENCE_CHECK_NUM, RESIDENCE_TOTAL_SCORE,
-            REAL_POP_INCREASE_NUM, REAL_POP_MODIFICATION_NUM, REAL_POP_CHECK_NUM, REAL_POP_TOTAL_SCORE, ENT_ORG_INCREASE_NUM,
-            ENT_ORG_MODIFICATION_NUM, ENT_ORG_CHECK_NUM, ENT_ORG_TOTAL_SCORE, KEY_SITE_INCREASE_NUM, KEY_SITE_MODIFICATION_NUM,
-            KEY_SITE_CHECK_NUM, KEY_SITE_TOTAL_SCORE, KEY_UNIT_INCREASE_NUM, KEY_UNIT_MODIFICATION_NUM, KEY_UNIT_CHECK_NUM,
-            KEY_UNIT_TOTAL_SCORE, KEY_FACI_INCREASE_NUM, KEY_FACI_MODIFICATION_NUM, KEY_FACI_CHECK_NUM, KEY_FACI_TOTAL_SCORE,
-            BASIC_DATA_INCREASE_NUM, BASIC_DATA_MODIFICATION_NUM, BASIC_DATA_CHECK_NUM, BASIC_DATA_TOTAL_SCORE, TOTAL_SCORE,
-            OTHER_NUM, ND_EFFECTIVE_NUM, GRID_ID, GRID_NAME, COMMUNITY_ID, COMMUNITY_NAME, TOWNSHIP_ID, TOWNSHIP_NAME,
-            CREATE_TIME, MODIFY_TIME)
+            (ID, USER_ID, NAME, LOGINNAME, EFFECT_NUM, EFFECT_SCORE, DYNAMIC_NUM, DYNAMIC_SCORE, ND_EFFECTIVE_NUM, OTHER_NUM,
+            DYNAMIC_EVENT_TOTAL_NUM, DYNAMIC_EVENT_TOTAL_SCORE, RESIDENCE_INCREASE_NUM, RESIDENCE_MODIFICATION_NUM, RESIDENCE_CHECK_NUM,
+            RESIDENCE_TOTAL_SCORE, REAL_POP_INCREASE_NUM, REAL_POP_MODIFICATION_NUM, REAL_POP_CHECK_NUM, REAL_POP_TOTAL_SCORE,
+            ENT_ORG_INCREASE_NUM, ENT_ORG_MODIFICATION_NUM, ENT_ORG_CHECK_NUM, ENT_ORG_TOTAL_SCORE, KEY_SITE_INCREASE_NUM,
+            KEY_SITE_MODIFICATION_NUM, KEY_SITE_CHECK_NUM, KEY_SITE_TOTAL_SCORE, KEY_UNIT_INCREASE_NUM, KEY_UNIT_MODIFICATION_NUM,
+            KEY_UNIT_CHECK_NUM, KEY_UNIT_TOTAL_SCORE, KEY_FACI_INCREASE_NUM, KEY_FACI_MODIFICATION_NUM, KEY_FACI_CHECK_NUM,
+            KEY_FACI_TOTAL_SCORE, BASIC_DATA_INCREASE_NUM, BASIC_DATA_MODIFICATION_NUM, BASIC_DATA_CHECK_NUM, BASIC_DATA_TOTAL_SCORE,
+            TOTAL_SCORE, GRID_ID, GRID_NAME, COMMUNITY_ID, COMMUNITY_NAME, TOWNSHIP_ID, TOWNSHIP_NAME, CREATE_TIME, MODIFY_TIME)
             VALUES
-            (SEQ_PERFORMANCE_ID.NEXTVAL, #{userId, jdbcType = DECIMAL}, #{name, jdbcType = VARCHAR}, #{loginname, jdbcType = VARCHAR},
-            #{dynamicEventReportPerformance.effectNumber, }
-
-            #{gridId, jdbcType = DECIMAL}, #{gridName, jdbcType = VARCHAR},
+            (SEQ_PERFORMANCE_ID.NEXTVAL, #{userId}, #{name, jdbcType = VARCHAR}, #{loginname, jdbcType = VARCHAR}, #{dynamic.effectNumber},
+            #{dynamic.effectScore}, #{dynamic.dynamicNumber}, #{dynamic.dynamicScore}, #{dynamic.ndEffectiveNumber}, #{dynamic.otherNumber},
+            #{dynamic.totalNumber}, #{dynamic.totalScore}, #{basic.residence.increaseNum}, #{basic.residence.modificationNum},
+            #{basic.residence.checkNum}, #{basic.residence.totalScore}, #{basic.realPopulation.increaseNum}, #{basic.realPopulation.modificationNum},
+            #{basic.realPopulation.checkNum},#{basic.realPopulation.totalScore}, #{basic.entOrg.increaseNum}, #{basic.entOrg.modificationNum},
+            #{basic.entOrg.checkNum} ,#{basic.entOrg.totalScore}, #{basic.keySite.increaseNum}, #{basic.keySite.modificationNum},
+            #{basic.keySite.checkNum}, #{basic.keySite.totalScore}, #{basic.keyUnit.increaseNum}, #{basic.keyUnit.modificationNum},
+            #{basic.keyUnit.checkNum}, #{basic.keyUnit.totalScore}, #{basic.keyFacilities.increaseNum}, #{basic.keyFacilities.modificationNum},
+            #{basic.keyFacilities.checkNum}, #{basic.keyFacilities.totalScore}, #{basic.increaseNum}, #{basic.modificationNum},
+            #{basic.checkNum}, #{basic.totalScore}, #{totalScore}, #{gridId, jdbcType = DECIMAL}, #{gridName, jdbcType = VARCHAR},
             #{communityId, jdbcType = DECIMAL}, #{communityName, jdbcType = VARCHAR}, #{townshipId, jdbcType = DECIMAL},
-            #{townshipName, jdbcType = VARCHAR}, SYSDATE, SYSDATE
-
-            )
+            #{townshipName, jdbcType = VARCHAR}, SYSDATE, SYSDATE)
         </if>
     </insert>
 </mapper>

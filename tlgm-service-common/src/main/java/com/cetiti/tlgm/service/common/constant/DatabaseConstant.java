@@ -22,4 +22,17 @@ public class DatabaseConstant {
      * 专职网格员级别
      */
     public static final int GRID_MANAGER_TYPE = 3;
+
+    /**
+     * 日志插入类型
+     */
+    public static final int INSERT_TYPE = 1;
+    /**
+     * 日志更新类型
+     */
+    public static final int UPDATE_TYPE = 2;
+    /**
+     * 日志审核类型
+     */
+    public static final int CHECK_TYPE = 5;
 }

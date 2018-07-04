@@ -32,7 +32,7 @@ spring:
       validation-query-timeout: 60
 
 mybatis:
-  mapper-locations: classpath: mybatis/mapper/*.xml
+  mapper-locations: classpath:mybatis/mapper/*.xml
   configuration:
     map-underscore-to-camel-case: true
 
@@ -42,7 +42,7 @@ spring:
   profiles: dev
   datasource:
     url: jdbc:oracle:thin:@10.0.30.197:1521:cetiti
-    username: tlgm-v3
+    username: tlgm_v3
     password: 123456
 
 logging:

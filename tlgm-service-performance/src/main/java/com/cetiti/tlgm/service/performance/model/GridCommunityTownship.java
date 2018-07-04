@@ -46,6 +46,6 @@ public class GridCommunityTownship implements Serializable {
     public void fixAllName(GridCommunityTownshipMapper gridCommunityTownshipMapper) throws SQLException {
         this.setGridName(gridCommunityTownshipMapper.getNameById(this.gridId));
         this.setCommunityName(gridCommunityTownshipMapper.getNameById(this.communityId));
-        this.setCommunityName(gridCommunityTownshipMapper.getNameById(this.townshipId));
+        this.setTownshipName(gridCommunityTownshipMapper.getNameById(this.townshipId));
     }
 }

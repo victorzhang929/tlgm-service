@@ -1,7 +1,9 @@
 package com.cetiti.tlgm.service.performance.model.quota;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
+import com.cetiti.tlgm.service.performance.mapper.PerformanceTaskMapper;
 import lombok.Data;
 
 import static com.cetiti.tlgm.service.common.CommonUtil.getDoubleScore;
@@ -19,17 +21,28 @@ import static com.cetiti.tlgm.service.performance.constant.PerformanceConstant.M
 @Data
 public class BasePerformance implements Serializable{
 
-    protected Long increaseNum;
-    protected Long modificationNum;
-    protected Long checkNum;
-    protected Double totalScore;
+    protected Long increaseNum = 0L;
+    protected Long modificationNum = 0L;
+    protected Long checkNum = 0L;
+    protected Double totalScore = 0.0;
 
     public BasePerformance(){}
 
-    public BasePerformance(long increaseNum, long modificationNum, long checkNum) {
-        this.increaseNum = increaseNum;
-        this.modificationNum = modificationNum;
-        this.checkNum = checkNum;
+    /**
+     * 计算模块列表的当前月份绩效信息
+     * @param performanceTaskMapper
+     * @param userId
+     * @param moduleTypes
+     * @throws Exception
+     */
+    protected void countPerformance(PerformanceTaskMapper performanceTaskMapper, BigDecimal userId, int[] moduleTypes)
+            throws Exception {
+        for (int moduleType : moduleTypes) {
+            BasePerformance result = performanceTaskMapper.countPerformance(userId, moduleType);
+            increaseNum += result.getIncreaseNum();
+            modificationNum += result.getModificationNum();
+            checkNum += result.getCheckNum();
+        }
         calcTotalScore();
     }
 

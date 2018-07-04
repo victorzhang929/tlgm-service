@@ -2,7 +2,6 @@ package com.cetiti.tlgm.service.performance.service.impl;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,9 +12,7 @@ import com.cetiti.tlgm.service.common.CommonUtil;
 import com.cetiti.tlgm.service.performance.mapper.GridCommunityTownshipMapper;
 import com.cetiti.tlgm.service.performance.mapper.OracleOperationMapper;
 import com.cetiti.tlgm.service.performance.mapper.PerformanceTaskMapper;
-import com.cetiti.tlgm.service.performance.model.FullTimeGridMember;
-import com.cetiti.tlgm.service.performance.model.Performance;
-import com.cetiti.tlgm.service.performance.model.quota.BasePerformance;
+import com.cetiti.tlgm.service.performance.model.GridMemberPerformance;
 import com.cetiti.tlgm.service.performance.model.quota.BasicDataMaintenancePerformance;
 import com.cetiti.tlgm.service.performance.model.quota.DynamicEventReportPerformance;
 import com.cetiti.tlgm.service.performance.model.quota.EntOrgPerformance;
@@ -32,12 +29,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.cetiti.tlgm.service.performance.constant.PerformanceConstant.ENT_ORG;
-import static com.cetiti.tlgm.service.performance.constant.PerformanceConstant.KEY_FACILITIES;
-import static com.cetiti.tlgm.service.performance.constant.PerformanceConstant.KEY_SITE;
-import static com.cetiti.tlgm.service.performance.constant.PerformanceConstant.KEY_UNIT;
-import static com.cetiti.tlgm.service.performance.constant.PerformanceConstant.REAL_POPULATION;
-import static com.cetiti.tlgm.service.performance.constant.PerformanceConstant.RESIDENCE;
 import static com.cetiti.tlgm.service.performance.constant.PerformanceConstant.TIAN_QUE_DYNAMIC_EVENT_REPORT_URL;
 
 /**
@@ -61,116 +52,91 @@ public class PerformanceTaskServiceImpl implements PerformanceTaskService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void insertFullTimeGridMembersPerMonth() throws Exception {
-        List<FullTimeGridMember> fullTimeGridMembers = performanceTaskMapper.listFullTimeGridMember();
-        for (FullTimeGridMember fullTimeGridMember : fullTimeGridMembers) {
-            insert(fullTimeGridMember);
+        List<GridMemberPerformance> gridMemberPerformances = performanceTaskMapper.listGridMemberPerformance();
+        for (GridMemberPerformance gridMemberPerformance : gridMemberPerformances) {
+            insert(gridMemberPerformance);
         }
     }
 
-    private void insert(FullTimeGridMember fullTimeGridMember) throws Exception {
-        fullTimeGridMember.fixAllName(gridCommunityTownshipMapper);
-        log.info("insert full-time grid member's performance: {}", fullTimeGridMember.toString());
-        performanceTaskMapper.insertWithoutPerformance(fullTimeGridMember);
+    private void insert(GridMemberPerformance gridMemberPerformance) throws Exception {
+        gridMemberPerformance.fixAllName(gridCommunityTownshipMapper);
+        log.info("insert full-time grid member's performance: {}", gridMemberPerformance.toString());
+        performanceTaskMapper.insertWithoutPerformance(gridMemberPerformance);
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void updateFullTimeGridMembersPerHour() throws Exception {
-        String currentMonth = oracleOperationMapper.getCurrentMonth();
-        List<Performance> performances = calcPerformance(currentMonth);
-        List<BigDecimal> userIdsInDB = performanceTaskMapper.listCurrentMonthUserId(currentMonth);
+        List<GridMemberPerformance> gridMemberPerformances = calcPerformance();
+        List<BigDecimal> userIdsInDB = performanceTaskMapper.listCurrentMonthUserId();
         BigDecimal userId;
-        for (Performance performance : performances) {
-            userId = performance.getUserId();
+        for (GridMemberPerformance gridMemberPerformance : gridMemberPerformances) {
+            userId = gridMemberPerformance.getUserId();
             for (BigDecimal userIdInDB : userIdsInDB) {
                 //如果userId在数据库中存在，则更新
                 if (userIdInDB.equals(userId)) {
-                    performance.fixAllName(gridCommunityTownshipMapper);
-                    performanceTaskMapper.saveOrUpdate(performance, currentMonth);
+                    gridMemberPerformance.fixAllName(gridCommunityTownshipMapper);
+                    performanceTaskMapper.saveOrUpdate(gridMemberPerformance);
                     userIdsInDB.remove(userIdInDB);
                     break;
                 }
             }
         }
-        performanceTaskMapper.batchDeleteUserIds(userIdsInDB, currentMonth);
+        if (null != userIdsInDB && userIdsInDB.size() > 0) {
+            performanceTaskMapper.batchDeleteUserIds(userIdsInDB);
+        }
     }
 
     /**
      * 计算当前月份绩效
      *
-     * @param currentMonth
      * @return
      * @throws Exception
      */
-    private List<Performance> calcPerformance(String currentMonth) throws Exception {
+    private List<GridMemberPerformance> calcPerformance() throws Exception {
 
-        List<FullTimeGridMember> fullTimeGridMembers = performanceTaskMapper.listFullTimeGridMember();
-        List<Performance> performances = new ArrayList<>(fullTimeGridMembers.size());
+        List<GridMemberPerformance> gridMemberPerformances = performanceTaskMapper.listGridMemberPerformance();
 
         Timestamp currentMonthFirstDay = oracleOperationMapper.getCurrentMonthFirstDay();
         Timestamp afterMonthFirstDay = oracleOperationMapper.getAfterMonthFirstDay();
         List<DynamicEventReportPerformance> dynamicEventReportPerformances =
                 getDynamicEventReportPerformanceFormTianque(currentMonthFirstDay, afterMonthFirstDay);
 
-        for (FullTimeGridMember fullTimeGridMember : fullTimeGridMembers) {
-            Performance performance = new Performance();
-            performance.setBasicDataMaintenancePerformance(constructPerformance(fullTimeGridMember.getUserId(), currentMonth));
-            if (null == dynamicEventReportPerformances && !dynamicEventReportPerformances.isEmpty()) {
+        for (GridMemberPerformance gridMemberPerformance : gridMemberPerformances) {
+            gridMemberPerformance.setBasic(constructPerformance(gridMemberPerformance.getUserId()));
+            if (null != dynamicEventReportPerformances && !dynamicEventReportPerformances.isEmpty()) {
                 for (DynamicEventReportPerformance dynamicEventReportPerformance : dynamicEventReportPerformances) {
                     //天阙username对应全科网格loginname
-                    if (StringUtils.compare(dynamicEventReportPerformance.getUsername(), fullTimeGridMember.getLoginname()) == 0) {
-                        performance.setDynamicEventReportPerformance(dynamicEventReportPerformance);
+                    if (StringUtils.compare(dynamicEventReportPerformance.getUsername(), gridMemberPerformance.getLoginname()) == 0) {
+                        gridMemberPerformance.setDynamic(dynamicEventReportPerformance);
                         dynamicEventReportPerformances.remove(dynamicEventReportPerformance);
                         break;
                     }
                 }
             }
-            performance.calcTotalScore();
-            performances.add(performance);
+            gridMemberPerformance.calcTotalScore();
         }
-        return performances;
+        return gridMemberPerformances;
     }
 
     /**
      * 计算专职网格员当前月份基础数据维护绩效得分
      * @param userId 用户id
-     * @param currentMonth 当前月份
      * @return
      * @throws Exception
      */
-    private BasicDataMaintenancePerformance constructPerformance(BigDecimal userId, String currentMonth) throws Exception {
+    private BasicDataMaintenancePerformance constructPerformance(BigDecimal userId) throws Exception {
         BasicDataMaintenancePerformance basicDataMaintenancePerformance = new BasicDataMaintenancePerformance();
 
-        basicDataMaintenancePerformance.setResidencePerformance((ResidencePerformance) countPerformance(userId, currentMonth, RESIDENCE));
-        basicDataMaintenancePerformance.setRealPopulationPerformance((RealPopulationPerformance) countPerformance(userId, currentMonth, REAL_POPULATION));
-        basicDataMaintenancePerformance.setEntOrgPerformance((EntOrgPerformance) countPerformance(userId, currentMonth, ENT_ORG));
-        basicDataMaintenancePerformance.setKeyUnitPerformance((KeyUnitPerformance) countPerformance(userId, currentMonth, KEY_UNIT));
-        basicDataMaintenancePerformance.setKeySitePerformance((KeySitePerformance) countPerformance(userId, currentMonth, KEY_SITE));
-        basicDataMaintenancePerformance.setKeyFacilitiesPerformance((KeyFacilitiesPerformance) countPerformance(userId, currentMonth, KEY_FACILITIES));
+        basicDataMaintenancePerformance.setResidence(new ResidencePerformance(performanceTaskMapper, userId));
+        basicDataMaintenancePerformance.setRealPopulation(new RealPopulationPerformance(performanceTaskMapper, userId));
+        basicDataMaintenancePerformance.setEntOrg(new EntOrgPerformance(performanceTaskMapper, userId));
+        basicDataMaintenancePerformance.setKeyUnit(new KeyUnitPerformance(performanceTaskMapper, userId));
+        basicDataMaintenancePerformance.setKeySite(new KeySitePerformance(performanceTaskMapper, userId));
+        basicDataMaintenancePerformance.setKeyFacilities(new KeyFacilitiesPerformance(performanceTaskMapper, userId));
 
         basicDataMaintenancePerformance.calcTotalScore();
         return basicDataMaintenancePerformance;
-    }
-
-    /**
-     * 计算专职网格员大模块各个子模块当前月份绩效总和
-     * @param userId 用户id
-     * @param currentMonth 当前月份
-     * @param moduleTypes 大模块（数组，各个子模块组成）
-     * @return
-     * @throws Exception
-     */
-    private BasePerformance countPerformance(BigDecimal userId, String currentMonth, int[] moduleTypes) throws Exception {
-        long increaseNum = 0L;
-        long modificationNum = 0L;
-        long checkNum = 0L;
-        for (int moduleType : moduleTypes) {
-            BasePerformance basePerformance = performanceTaskMapper.countPerformance(userId, moduleType, currentMonth);
-            increaseNum += basePerformance.getIncreaseNum();
-            modificationNum += basePerformance.getModificationNum();
-            checkNum += basePerformance.getCheckNum();
-        }
-        return new BasePerformance(increaseNum, modificationNum, checkNum);
     }
 
     /**
@@ -206,7 +172,7 @@ public class PerformanceTaskServiceImpl implements PerformanceTaskService {
         return dynamicEventReportPerformances;
     }
 
-    /**
+     /**
      * 构建URI参数
      *
      * @param startTime 开始时间（月初）
