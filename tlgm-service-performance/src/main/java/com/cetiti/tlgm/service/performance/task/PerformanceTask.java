@@ -42,7 +42,7 @@ public class PerformanceTask {
     /**
      * 每小时55分更新所有专职网格员信息
      */
-    @Scheduled(cron = "0 52 * * * ?")
+    @Scheduled(cron = "0 55 * * * ?")
     public void updateFullTimeGridMembersPerHour() {
         log.info("hour update operation start");
         try {

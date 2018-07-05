@@ -67,7 +67,9 @@ public class PerformanceTaskServiceImpl implements PerformanceTaskService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void updateFullTimeGridMembersPerHour() throws Exception {
-        List<GridMemberPerformance> gridMemberPerformances = calcPerformance();
+        List<GridMemberPerformance> gridMemberPerformances = performanceTaskMapper.listGridMemberPerformance();
+        //计算所有专职网格员绩效
+        calcTotalPerformance(gridMemberPerformances);
         List<BigDecimal> userIdsInDB = performanceTaskMapper.listCurrentMonthUserId();
         BigDecimal userId;
         for (GridMemberPerformance gridMemberPerformance : gridMemberPerformances) {
@@ -88,22 +90,44 @@ public class PerformanceTaskServiceImpl implements PerformanceTaskService {
     }
 
     /**
+     * 计算专职网格员当前月份基础数据维护绩效得分
+     *
+     * @param userId
+     * @return
+     * @throws Exception
+     */
+    private BasicDataMaintenancePerformance calcBasicPerformance(BigDecimal userId) throws Exception {
+
+        BasicDataMaintenancePerformance basicDataMaintenancePerformance = new BasicDataMaintenancePerformance();
+
+        basicDataMaintenancePerformance.setResidence(new ResidencePerformance(performanceTaskMapper, userId));
+        basicDataMaintenancePerformance.setRealPopulation(new RealPopulationPerformance(performanceTaskMapper, userId));
+        basicDataMaintenancePerformance.setEntOrg(new EntOrgPerformance(performanceTaskMapper, userId));
+        basicDataMaintenancePerformance.setKeyUnit(new KeyUnitPerformance(performanceTaskMapper, userId));
+        basicDataMaintenancePerformance.setKeySite(new KeySitePerformance(performanceTaskMapper, userId));
+        basicDataMaintenancePerformance.setKeyFacilities(new KeyFacilitiesPerformance(performanceTaskMapper, userId));
+        basicDataMaintenancePerformance.calcTotalScore();
+
+        return basicDataMaintenancePerformance;
+    }
+
+    /**
      * 计算当前月份绩效
      *
      * @return
      * @throws Exception
      */
-    private List<GridMemberPerformance> calcPerformance() throws Exception {
-
-        List<GridMemberPerformance> gridMemberPerformances = performanceTaskMapper.listGridMemberPerformance();
-
+    private List<GridMemberPerformance> calcTotalPerformance(List<GridMemberPerformance> gridMemberPerformances) throws Exception {
+        //计算当月动态事件绩效得分
         Timestamp currentMonthFirstDay = oracleOperationMapper.getCurrentMonthFirstDay();
         Timestamp afterMonthFirstDay = oracleOperationMapper.getAfterMonthFirstDay();
         List<DynamicEventReportPerformance> dynamicEventReportPerformances =
                 getDynamicEventReportPerformanceFormTianque(currentMonthFirstDay, afterMonthFirstDay);
 
         for (GridMemberPerformance gridMemberPerformance : gridMemberPerformances) {
-            gridMemberPerformance.setBasic(constructPerformance(gridMemberPerformance.getUserId()));
+            //计算当月基础数据维护绩效得分
+            gridMemberPerformance.setBasic(calcBasicPerformance(gridMemberPerformance.getUserId()));
+
             if (null != dynamicEventReportPerformances && !dynamicEventReportPerformances.isEmpty()) {
                 for (DynamicEventReportPerformance dynamicEventReportPerformance : dynamicEventReportPerformances) {
                     //天阙username对应全科网格loginname
@@ -119,25 +143,6 @@ public class PerformanceTaskServiceImpl implements PerformanceTaskService {
         return gridMemberPerformances;
     }
 
-    /**
-     * 计算专职网格员当前月份基础数据维护绩效得分
-     * @param userId 用户id
-     * @return
-     * @throws Exception
-     */
-    private BasicDataMaintenancePerformance constructPerformance(BigDecimal userId) throws Exception {
-        BasicDataMaintenancePerformance basicDataMaintenancePerformance = new BasicDataMaintenancePerformance();
-
-        basicDataMaintenancePerformance.setResidence(new ResidencePerformance(performanceTaskMapper, userId));
-        basicDataMaintenancePerformance.setRealPopulation(new RealPopulationPerformance(performanceTaskMapper, userId));
-        basicDataMaintenancePerformance.setEntOrg(new EntOrgPerformance(performanceTaskMapper, userId));
-        basicDataMaintenancePerformance.setKeyUnit(new KeyUnitPerformance(performanceTaskMapper, userId));
-        basicDataMaintenancePerformance.setKeySite(new KeySitePerformance(performanceTaskMapper, userId));
-        basicDataMaintenancePerformance.setKeyFacilities(new KeyFacilitiesPerformance(performanceTaskMapper, userId));
-
-        basicDataMaintenancePerformance.calcTotalScore();
-        return basicDataMaintenancePerformance;
-    }
 
     /**
      * 从天阙获取动态事件绩效得分
@@ -172,7 +177,7 @@ public class PerformanceTaskServiceImpl implements PerformanceTaskService {
         return dynamicEventReportPerformances;
     }
 
-     /**
+    /**
      * 构建URI参数
      *
      * @param startTime 开始时间（月初）
