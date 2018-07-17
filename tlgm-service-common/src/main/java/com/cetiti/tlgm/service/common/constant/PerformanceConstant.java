@@ -1,6 +1,4 @@
-package com.cetiti.tlgm.service.performance.constant;
-
-import com.cetiti.tlgm.service.common.constant.ModuleConstant;
+package com.cetiti.tlgm.service.common.constant;
 
 import static com.cetiti.tlgm.service.common.constant.ModuleConstant.BUSSTATION;
 import static com.cetiti.tlgm.service.common.constant.ModuleConstant.ENTERPRISE;

@@ -1,10 +1,10 @@
-package com.cetiti.tlgm.service.performance.mapper;
+package com.cetiti.tlgm.service.common.mapper;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-import com.cetiti.tlgm.service.performance.model.GridMemberPerformance;
-import com.cetiti.tlgm.service.performance.model.quota.BasePerformance;
+import com.cetiti.tlgm.service.common.model.GridMemberPerformance;
+import com.cetiti.tlgm.service.common.model.quota.BasePerformance;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 

@@ -1,4 +1,4 @@
-package com.cetiti.tlgm.service.performance.model.quota;
+package com.cetiti.tlgm.service.common.model.quota;
 
 import java.io.Serializable;
 

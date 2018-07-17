@@ -1,4 +1,4 @@
-package com.cetiti.tlgm.service.performance.config;
+package com.cetiti.tlgm.service.common.config;
 
 import java.util.concurrent.Executor;
 
@@ -11,6 +11,7 @@ import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
 /**
  * 定时任务配置
+ *
  * @author zhangwei
  * @email zhangwei@cetiti.com
  * @date 2018-06-27 14:42:31

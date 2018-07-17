@@ -32,7 +32,7 @@ spring:
       validation-query-timeout: 60
 
 mybatis:
-  mapper-locations: classpath:mybatis/mapper/*.xml
+  mapper-locations: classpath:mybatis/*.xml
   configuration:
     map-underscore-to-camel-case: true
 

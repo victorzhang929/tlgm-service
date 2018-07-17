@@ -9,18 +9,18 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.cetiti.tlgm.service.common.CommonUtil;
-import com.cetiti.tlgm.service.performance.mapper.GridCommunityTownshipMapper;
-import com.cetiti.tlgm.service.performance.mapper.OracleOperationMapper;
-import com.cetiti.tlgm.service.performance.mapper.PerformanceTaskMapper;
-import com.cetiti.tlgm.service.performance.model.GridMemberPerformance;
-import com.cetiti.tlgm.service.performance.model.quota.BasicDataMaintenancePerformance;
-import com.cetiti.tlgm.service.performance.model.quota.DynamicEventReportPerformance;
-import com.cetiti.tlgm.service.performance.model.quota.EntOrgPerformance;
-import com.cetiti.tlgm.service.performance.model.quota.KeyFacilitiesPerformance;
-import com.cetiti.tlgm.service.performance.model.quota.KeySitePerformance;
-import com.cetiti.tlgm.service.performance.model.quota.KeyUnitPerformance;
-import com.cetiti.tlgm.service.performance.model.quota.RealPopulationPerformance;
-import com.cetiti.tlgm.service.performance.model.quota.ResidencePerformance;
+import com.cetiti.tlgm.service.common.mapper.GridCommunityTownshipMapper;
+import com.cetiti.tlgm.service.common.mapper.OracleOperationMapper;
+import com.cetiti.tlgm.service.common.mapper.PerformanceTaskMapper;
+import com.cetiti.tlgm.service.common.model.GridMemberPerformance;
+import com.cetiti.tlgm.service.common.model.quota.BasicDataMaintenancePerformance;
+import com.cetiti.tlgm.service.common.model.quota.DynamicEventReportPerformance;
+import com.cetiti.tlgm.service.common.model.quota.EntOrgPerformance;
+import com.cetiti.tlgm.service.common.model.quota.KeyFacilitiesPerformance;
+import com.cetiti.tlgm.service.common.model.quota.KeySitePerformance;
+import com.cetiti.tlgm.service.common.model.quota.KeyUnitPerformance;
+import com.cetiti.tlgm.service.common.model.quota.RealPopulationPerformance;
+import com.cetiti.tlgm.service.common.model.quota.ResidencePerformance;
 import com.cetiti.tlgm.service.performance.service.PerformanceTaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -29,7 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.cetiti.tlgm.service.performance.constant.PerformanceConstant.TIAN_QUE_DYNAMIC_EVENT_REPORT_URL;
+import static com.cetiti.tlgm.service.common.constant.PerformanceConstant.TIAN_QUE_DYNAMIC_EVENT_REPORT_URL;
 
 /**
  * 绩效业务接口实现类

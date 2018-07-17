@@ -1,10 +1,10 @@
-package com.cetiti.tlgm.service.performance.model.quota;
+package com.cetiti.tlgm.service.common.model.quota;
 
 import java.io.Serializable;
 
 import lombok.Data;
 
-import static com.cetiti.tlgm.service.performance.constant.PerformanceConstant.MAX_SCORE;
+import static com.cetiti.tlgm.service.common.constant.PerformanceConstant.MAX_SCORE;
 
 /**
  * 基础数据维护得分绩效模型

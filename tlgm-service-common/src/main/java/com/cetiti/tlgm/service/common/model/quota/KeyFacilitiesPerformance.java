@@ -1,11 +1,11 @@
-package com.cetiti.tlgm.service.performance.model.quota;
+package com.cetiti.tlgm.service.common.model.quota;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import com.cetiti.tlgm.service.performance.mapper.PerformanceTaskMapper;
+import com.cetiti.tlgm.service.common.mapper.PerformanceTaskMapper;
 
-import static com.cetiti.tlgm.service.performance.constant.PerformanceConstant.KEY_FACILITIES;
+import static com.cetiti.tlgm.service.common.constant.PerformanceConstant.KEY_FACILITIES;
 
 /**
  * 重点设施基础数据维护得分绩效模型

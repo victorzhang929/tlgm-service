@@ -1,11 +1,11 @@
-package com.cetiti.tlgm.service.performance.model;
+package com.cetiti.tlgm.service.common.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 
 import com.cetiti.tlgm.service.common.CommonUtil;
-import com.cetiti.tlgm.service.performance.mapper.GridCommunityTownshipMapper;
+import com.cetiti.tlgm.service.common.mapper.GridCommunityTownshipMapper;
 import lombok.Data;
 
 import static com.cetiti.tlgm.service.common.constant.GridCommunityTownshipConstant.COMMUNITY_ID_LENGTH;

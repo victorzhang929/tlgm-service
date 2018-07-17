@@ -1,11 +1,12 @@
-package com.cetiti.tlgm.service.performance.model.quota;
+package com.cetiti.tlgm.service.common.model.quota;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import com.cetiti.tlgm.service.performance.mapper.PerformanceTaskMapper;
+import com.cetiti.tlgm.service.common.mapper.PerformanceTaskMapper;
 
-import static com.cetiti.tlgm.service.performance.constant.PerformanceConstant.RESIDENCE;
+import static com.cetiti.tlgm.service.common.constant.PerformanceConstant.RESIDENCE;
+
 
 /**
  * 实有房屋基础数据维护得分绩效模型
