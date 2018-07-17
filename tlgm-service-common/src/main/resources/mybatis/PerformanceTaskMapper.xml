@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cetiti.tlgm.service.common.mapper.PerformanceTaskMapper">
 
-    <resultMap id="gridMemberPerformance" type="com.cetiti.tlgm.service.common.model.GridMemberPerformance">
+    <resultMap id="gridMemberPerformance" type="com.cetiti.tlgm.service.common.model.performance.GridMemberPerformance">
         <id column="user_id" jdbcType="DECIMAL" property="userId" />
         <result column="name" jdbcType="VARCHAR" property="name" />
         <result column="loginname" jdbcType="VARCHAR" property="loginname" />
@@ -11,7 +11,7 @@
         <result column="township_id" jdbcType="DECIMAL" property="townshipId" />
     </resultMap>
     
-    <resultMap id="basePerformance" type="com.cetiti.tlgm.service.common.model.quota.BasePerformance">
+    <resultMap id="basePerformance" type="com.cetiti.tlgm.service.common.model.performance.quota.BasePerformance">
         <result column="increase_num" jdbcType="DECIMAL" property="increaseNum" />
         <result column="modification_num" jdbcType="DECIMAL" property="modificationNum" />
         <result column="check_num" jdbcType="DECIMAL" property="checkNum" />
@@ -28,7 +28,7 @@
         AND STATUS = ${@com.cetiti.tlgm.service.common.constant.DatabaseConstant@VALID}
     </select>
 
-    <insert id="insertWithoutPerformance" parameterType="com.cetiti.tlgm.service.common.model.GridMemberPerformance">
+    <insert id="insertWithoutPerformance" parameterType="com.cetiti.tlgm.service.common.model.performance.GridMemberPerformance">
         INSERT INTO T_PERFORMANCE
         (ID, USER_ID, NAME, LOGINNAME, GRID_ID, GRID_NAME, COMMUNITY_ID, COMMUNITY_NAME, TOWNSHIP_ID, TOWNSHIP_NAME,
         CREATE_TIME, MODIFY_TIME)
@@ -58,8 +58,8 @@
             #{userId}
         </foreach>
     </delete>
-    
-    <insert id="saveOrUpdate" parameterType="com.cetiti.tlgm.service.common.model.GridMemberPerformance">
+
+    <insert id="saveOrUpdate" parameterType="com.cetiti.tlgm.service.common.model.performance.GridMemberPerformance">
         <selectKey keyProperty="count" resultType="int" order="BEFORE">
             SELECT COUNT(USER_ID) FROM T_PERFORMANCE WHERE USER_ID = #{userId} AND TO_CHAR(CREATE_TIME,'YYYY-MM') = <include refid="getCurrentMonth"/>
         </selectKey>

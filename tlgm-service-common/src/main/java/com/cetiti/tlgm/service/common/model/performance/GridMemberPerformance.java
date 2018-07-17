@@ -1,10 +1,10 @@
-package com.cetiti.tlgm.service.common.model;
+package com.cetiti.tlgm.service.common.model.performance;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import com.cetiti.tlgm.service.common.model.quota.BasicDataMaintenancePerformance;
-import com.cetiti.tlgm.service.common.model.quota.DynamicEventReportPerformance;
+import com.cetiti.tlgm.service.common.model.performance.quota.BasicDataMaintenancePerformance;
+import com.cetiti.tlgm.service.common.model.performance.quota.DynamicEventReportPerformance;
 import lombok.Data;
 
 import static com.cetiti.tlgm.service.common.CommonUtil.getDoubleScore;

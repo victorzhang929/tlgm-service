@@ -1,4 +1,4 @@
-package com.cetiti.tlgm.service.common.model.quota;
+package com.cetiti.tlgm.service.common.model.performance.quota;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
