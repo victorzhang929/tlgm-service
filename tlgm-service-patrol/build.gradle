@@ -1,0 +1,28 @@
+archivesBaseName = 'tlgm-service-patorl'
+
+
+buildscript {
+    repositories {
+        maven {url 'https://repo.spring.io/libs-milestone'}
+    }
+    dependencies {
+        classpath ("org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion")
+    }
+}
+
+apply plugin: 'org.springframework.boot'
+
+bootRepackage {
+    mainClass = 'com.cetiti.tlgm.service.performance.PerformanceApplication'
+}
+
+configurations {
+    all*.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+}
+
+dependencies {
+    compile project(':tlgm-service-common')
+    compile "org.springframework.boot:spring-boot-devtools:$springBootVersion"
+    compile 'com.alibaba:fastjson:1.2.32'
+    compile 'org.apache.commons:commons-lang3:3.5'
+}
