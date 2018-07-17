@@ -40,9 +40,9 @@ public class PerformanceTask {
     }
 
     /**
-     * 每小时55分更新所有专职网格员信息
+     * 每小时各个时间段更新所有专职网格员信息
      */
-    @Scheduled(cron = "0 55 * * * ?")
+    @Scheduled(cron = "0 5,15,25,35,45,55 * * * ?")
     public void updateFullTimeGridMembersPerHour() {
         log.info("hour update operation start");
         try {

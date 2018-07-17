@@ -73,12 +73,13 @@ public class PerformanceTaskServiceImpl implements PerformanceTaskService {
         List<BigDecimal> userIdsInDB = performanceTaskMapper.listCurrentMonthUserId();
         BigDecimal userId;
         for (GridMemberPerformance gridMemberPerformance : gridMemberPerformances) {
+            //插入或者更新
+            gridMemberPerformance.fixAllName(gridCommunityTownshipMapper);
+            performanceTaskMapper.saveOrUpdate(gridMemberPerformance);
+
             userId = gridMemberPerformance.getUserId();
             for (BigDecimal userIdInDB : userIdsInDB) {
-                //如果userId在数据库中存在，则更新
                 if (userIdInDB.equals(userId)) {
-                    gridMemberPerformance.fixAllName(gridCommunityTownshipMapper);
-                    performanceTaskMapper.saveOrUpdate(gridMemberPerformance);
                     userIdsInDB.remove(userIdInDB);
                     break;
                 }
