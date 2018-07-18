@@ -13,4 +13,5 @@ public class PatrolConstant {
     }
 
     public static final double ONLINE_TIME_STANDARD = 2.0;
+    public static final String PATROL_TABLE_NAME = "T_PATROL_";
 }

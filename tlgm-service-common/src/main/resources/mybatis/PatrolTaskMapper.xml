@@ -18,7 +18,11 @@
     </resultMap>
 
     <sql id="getTheDayBeforeToday">
-        (SELECT TO_CHAR(SYSDATE - 1, 'YYYY-MM') FROM DUAL)
+        (SELECT TO_CHAR(SYSDATE - 1, 'YYYY-MM-DD') FROM DUAL)
+    </sql>
+    
+    <sql id="getCurrentMonth">
+        SELECT TO_CHAR(SYSDATE, 'YYYY-MM') FROM DUAL
     </sql>
 
     <select id="listGridMemberPatrol" resultMap="gridMemberPatrol">
@@ -30,14 +34,14 @@
 
     <select id="listTimeAndLocation" resultMap="durationAndMileage">
         SELECT CREATE_TIME, LATITUDE, LONGITUDE FROM T_GRID_MEMBER_TRAJECTORY
-        WHERE USER_ID = #{userId} AND TO_CHAR(CREATE_TIME, 'YYYY-MM-DD') = '2017-12-13' <!--AND TO_CHAR(CREATE_TIME, 'YYYY-MM-DD') = <include refid="getTheDayBeforeToday"/>-->
+        WHERE USER_ID = #{userId} AND TO_CHAR(CREATE_TIME, 'YYYY-MM-DD') = <include refid="getTheDayBeforeToday"/>
         ORDER BY CREATE_TIME
     </select>
 
-    <insert id="insertBatch" parameterType="java.util.List">
+    <insert id="insertBatch">
         BEGIN
         <foreach collection="gridMemberPatrols" item="patrol" index="index" separator="">
-            INSERT INTO T_PATROL (ID, USER_ID, LOGINNAME, NAME, DURATION, MILEAGE, CREATE_TIME, MODIFIED_TIME,
+            INSERT INTO ${tableName} (ID, USER_ID, LOGINNAME, NAME, DURATION, MILEAGE, CREATE_TIME, MODIFIED_TIME,
             GRID_ID, GRID_NAME, COMMUNITY_ID, COMMUNITY_NAME, TOWNSHIP_ID, TOWNSHIP_NAME) VALUES
             (SEQ_PATROL_ID.NEXTVAL, #{patrol.userId}, #{patrol.loginname, jdbcType=VARCHAR}, #{patrol.name, jdbcType=VARCHAR},
             #{patrol.duration}, #{patrol.mileage}, SYSDATE, SYSDATE, #{patrol.gridId, jdbcType=DECIMAL}, #{patrol.gridName, jdbcType=VARCHAR},
@@ -47,5 +51,23 @@
         COMMIT;
         END;
     </insert>
-
+    
+    <update id="createPatrolTable" parameterType="java.lang.String">
+        CREATE TABLE ${tableName} (
+          ID NUMBER(10) NOT NULL,
+          USER_ID NUMBER(10) NOT NULL,
+          NAME VARCHAR2(200),
+          LOGINNAME VARCHAR2(50),
+          DURATION NUMBER(6,4) NOT NULL,
+          MILEAGE NUMBER(9,4) NOT NULL,
+          CREATE_TIME DATE NOT NULL,
+          MODIFIED_TIME DATE NOT NULL,
+          GRID_ID NUMBER(20),
+          GRID_NAME VARCHAR2(80),
+          COMMUNITY_ID NUMBER(20),
+          COMMUNITY_NAME VARCHAR2(80),
+          TOWNSHIP_ID NUMBER(20),
+          TOWNSHIP_NAME VARCHAR2(80)
+        )
+    </update>
 </mapper>

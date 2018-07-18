@@ -39,7 +39,17 @@ public interface PatrolTaskMapper {
      * 批量插入专职网格员时长和里程
      *
      * @param gridMemberPatrols
+     * @param tableName
      * @throws Exception
      */
-    void insertBatch(@Param("gridMemberPatrols") List<GridMemberPatrol> gridMemberPatrols) throws Exception;
+    void insertBatch(@Param("gridMemberPatrols") List<GridMemberPatrol> gridMemberPatrols,@Param("tableName") String tableName)
+            throws Exception;
+
+    /**
+     * 每个月创建巡查表，分表
+     *
+     * @param tableName
+     * @throws Exception
+     */
+    void createPatrolTable(@Param("tableName") String tableName) throws Exception;
 }

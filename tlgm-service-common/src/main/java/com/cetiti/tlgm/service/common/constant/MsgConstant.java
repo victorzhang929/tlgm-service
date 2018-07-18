@@ -10,6 +10,8 @@ package com.cetiti.tlgm.service.common.constant;
 public class MsgConstant {
     public static final String INSERT_SUCCESS = "添加成功";
     public static final String INSERT_FAIL = "添加失败";
+    public static final String CREATE_TABLE_SUCCESS = "创建表成功";
+    public static final String CREATE_TABLE_FAIL = "创建表失败";
     public static final String UPDATE_SUCCESS = "更新成功";
     public static final String UPDATE_FAIL = "更新失败";
     public static final String QUERY_SUCCESS = "查询成功";

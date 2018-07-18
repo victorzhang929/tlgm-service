@@ -2,11 +2,10 @@ package com.cetiti.tlgm.service.patrol.service.impl;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.TimeUnit;
 
 import com.cetiti.tlgm.service.common.constant.PatrolConstant;
 import com.cetiti.tlgm.service.common.mapper.GridCommunityTownshipMapper;
+import com.cetiti.tlgm.service.common.mapper.OracleOperationMapper;
 import com.cetiti.tlgm.service.common.mapper.PatrolTaskMapper;
 import com.cetiti.tlgm.service.common.model.patrol.DurationMileageDTO;
 import com.cetiti.tlgm.service.common.model.patrol.GridMemberPatrol;
@@ -17,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.cetiti.tlgm.service.common.constant.PatrolConstant.PATROL_TABLE_NAME;
 import static com.cetiti.tlgm.service.common.util.CommonUtil.getDistance;
 import static com.cetiti.tlgm.service.common.util.CommonUtil.getTimeInterval;
 
@@ -37,11 +37,14 @@ public class PatrolTaskServiceImpl implements PatrolTaskService {
     @Autowired
     private GridCommunityTownshipMapper gridCommunityTownshipMapper;
 
+    @Autowired
+    private OracleOperationMapper oracleOperationMapper;
+
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void insertPatrolDurationAndMileage() throws Exception {
         List<GridMemberPatrol> gridMemberPatrols = patrolTaskMapper.listGridMemberPatrol();
-
+        long start = System.currentTimeMillis();
         //计算时长和里程
         for (GridMemberPatrol gridMemberPatrol : gridMemberPatrols) {
             List<DurationMileageDTO> durationMileages = new LinkedList<>(patrolTaskMapper.listTimeAndLocation(gridMemberPatrol.getUserId()));
@@ -50,11 +53,11 @@ public class PatrolTaskServiceImpl implements PatrolTaskService {
             double mileage = 0.0;
             for (int i = size - 1; i > 0; i--) {
                 double interval = getTimeInterval(durationMileages.get(i).getPatrolTime(), durationMileages.get(i - 1).getPatrolTime());
-                if ( interval <= PatrolConstant.ONLINE_TIME_STANDARD) {
+                if (interval <= PatrolConstant.ONLINE_TIME_STANDARD) {
                     duration += interval;
                 }
                 mileage += getDistance(durationMileages.get(i).getLongitude(), durationMileages.get(i).getLatitude(),
-                        durationMileages.get(i-1).getLongitude(), durationMileages.get(i-1).getLatitude());
+                        durationMileages.get(i - 1).getLongitude(), durationMileages.get(i - 1).getLatitude());
             }
             gridMemberPatrol.fixAllName(gridCommunityTownshipMapper);
             gridMemberPatrol.setDuration(duration);
@@ -63,13 +66,23 @@ public class PatrolTaskServiceImpl implements PatrolTaskService {
 
         //批量插入数据库
         if (!gridMemberPatrols.isEmpty()) {
-            ForkJoinPool pool = new ForkJoinPool();
-            pool.submit(new MultiThreadPatrolOperation(0, gridMemberPatrols.size(), gridMemberPatrols, patrolTaskMapper));
-            pool.awaitTermination(1, TimeUnit.SECONDS);
+            patrolTaskMapper.insertBatch(gridMemberPatrols, getPatrolTableName());
         }
+        System.out.println(System.currentTimeMillis() - start);
     }
 
+    @Override
+    public void doCreateTablePerMonth() throws Exception {
+        patrolTaskMapper.createPatrolTable(getPatrolTableName());
+    }
 
-
-
+    /**
+     * 获取当前月份表名
+     *
+     * @return
+     * @throws Exception
+     */
+    private String getPatrolTableName() throws Exception {
+        return PATROL_TABLE_NAME + oracleOperationMapper.getCurrentMonth();
+    }
 }
