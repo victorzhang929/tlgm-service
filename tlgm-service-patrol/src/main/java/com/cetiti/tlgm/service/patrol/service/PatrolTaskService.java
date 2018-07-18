@@ -15,11 +15,4 @@ public interface PatrolTaskService {
      * @throws Exception
      */
     void insertPatrolDurationAndMileage() throws Exception;
-
-    /**
-     * 每个月创建巡查表，分表备份
-     *
-     * @throws Exception
-     */
-    void doCreateTablePerMonth() throws Exception;
 }

@@ -2,6 +2,7 @@ package com.cetiti.tlgm.service.common.mapper;
 
 import java.sql.Timestamp;
 
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
@@ -37,4 +38,13 @@ public interface OracleOperationMapper {
      */
     @Select("SELECT TO_CHAR(SYSDATE, 'YYYYMM') FROM DUAL")
     String getCurrentMonth() throws Exception;
+
+    /**
+     * 通过表名查看数据库中是否存在该表
+     * @param tableName
+     * @return 存在返回1，不存在返回0
+     * @throws Exception
+     */
+    @Select("SELECT COUNT(1) FROM USER_TABLES WHERE TABLE_NAME =UPPER('${tableName}')")
+    int checkTableExistByTableName(@Param("tableName") String tableName) throws Exception;
 }

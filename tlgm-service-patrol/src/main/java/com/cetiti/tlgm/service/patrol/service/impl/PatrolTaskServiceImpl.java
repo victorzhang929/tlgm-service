@@ -43,8 +43,13 @@ public class PatrolTaskServiceImpl implements PatrolTaskService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void insertPatrolDurationAndMileage() throws Exception {
+        String currentPatrolTableName = getCurrentMonthPatrolTableName();
+        if (!checkPatrolTableExist(currentPatrolTableName)) {
+            //若表不存在则创建
+            patrolTaskMapper.createPatrolTable(currentPatrolTableName);
+        }
+
         List<GridMemberPatrol> gridMemberPatrols = patrolTaskMapper.listGridMemberPatrol();
-        long start = System.currentTimeMillis();
         //计算时长和里程
         for (GridMemberPatrol gridMemberPatrol : gridMemberPatrols) {
             List<DurationMileageDTO> durationMileages = new LinkedList<>(patrolTaskMapper.listTimeAndLocation(gridMemberPatrol.getUserId()));
@@ -66,14 +71,8 @@ public class PatrolTaskServiceImpl implements PatrolTaskService {
 
         //批量插入数据库
         if (!gridMemberPatrols.isEmpty()) {
-            patrolTaskMapper.insertBatch(gridMemberPatrols, getPatrolTableName());
+            patrolTaskMapper.insertBatch(gridMemberPatrols, currentPatrolTableName);
         }
-        System.out.println(System.currentTimeMillis() - start);
-    }
-
-    @Override
-    public void doCreateTablePerMonth() throws Exception {
-        patrolTaskMapper.createPatrolTable(getPatrolTableName());
     }
 
     /**
@@ -82,7 +81,21 @@ public class PatrolTaskServiceImpl implements PatrolTaskService {
      * @return
      * @throws Exception
      */
-    private String getPatrolTableName() throws Exception {
+    private String getCurrentMonthPatrolTableName() throws Exception {
         return PATROL_TABLE_NAME + oracleOperationMapper.getCurrentMonth();
+    }
+
+    /**
+     * 检查当月巡查表是否存在，若不存在创建
+     *
+     * @return
+     * @throws Exception
+     */
+    private boolean checkPatrolTableExist(String currentPatrolTableName) throws Exception {
+        int count = oracleOperationMapper.checkTableExistByTableName(currentPatrolTableName);
+        if (count > 0) {
+            return true;
+        }
+        return false;
     }
 }

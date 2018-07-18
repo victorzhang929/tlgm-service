@@ -25,9 +25,4 @@ public class PatrolTaskServiceTest {
     public void testInsertPatrolDurationAndMileage() throws Exception {
         patrolTaskService.insertPatrolDurationAndMileage();
     }
-
-    @Test
-    public void testDoCreateTablePerMonth() throws Exception {
-        patrolTaskService.doCreateTablePerMonth();
-    }
 }
