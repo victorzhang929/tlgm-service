@@ -1,4 +1,4 @@
-archivesBaseName = 'tlgm-service-patorl'
+archivesBaseName = 'tlgm-service-patrol'
 
 
 buildscript {
