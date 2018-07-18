@@ -1,6 +1,5 @@
 package com.cetiti.tlgm.service.patrol.service.impl;
 
-import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
@@ -41,14 +40,10 @@ public class PatrolTaskServiceImpl implements PatrolTaskService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void insertPatrolDurationAndMileage() throws Exception {
-        long startTime = System.currentTimeMillis();
         List<GridMemberPatrol> gridMemberPatrols = patrolTaskMapper.listGridMemberPatrol();
 
         //计算时长和里程
         for (GridMemberPatrol gridMemberPatrol : gridMemberPatrols) {
-            if (gridMemberPatrol.getUserId().compareTo(new BigDecimal(9931)) == 0) {
-                System.out.println("hello");
-            }
             List<DurationMileageDTO> durationMileages = new LinkedList<>(patrolTaskMapper.listTimeAndLocation(gridMemberPatrol.getUserId()));
             int size = durationMileages.size();
             double duration = 0.0;
@@ -72,7 +67,6 @@ public class PatrolTaskServiceImpl implements PatrolTaskService {
             pool.submit(new MultiThreadPatrolOperation(0, gridMemberPatrols.size(), gridMemberPatrols, patrolTaskMapper));
             pool.awaitTermination(1, TimeUnit.SECONDS);
         }
-        System.out.println(System.currentTimeMillis() - startTime);
     }
 
 

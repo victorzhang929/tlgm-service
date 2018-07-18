@@ -23,7 +23,10 @@ public class PatrolTask {
     @Autowired
     private PatrolTaskService patrolTaskService;
 
-    @Scheduled(cron = "0 0 0 * * ?")
+    /**
+     * 每天凌晨1点计算前一天专职网格员在线时长和里程数
+     */
+    @Scheduled(cron = "0 0 1 * * ?")
     public void insertPatrolDurationAndMileage() {
         log.info("day insert operation start");
         try {
