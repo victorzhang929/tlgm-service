@@ -4,8 +4,8 @@ import java.io.Serializable;
 
 import lombok.Data;
 
-import static com.cetiti.tlgm.service.common.CommonUtil.getDoubleScore;
-import static com.cetiti.tlgm.service.common.CommonUtil.getLongNumber;
+import static com.cetiti.tlgm.service.common.util.CommonUtil.getDoubleWithDefaultValue;
+import static com.cetiti.tlgm.service.common.util.CommonUtil.getLongWithDefaultValue;
 
 /**
  * 动态事件上报模型
@@ -48,34 +48,34 @@ public class DynamicEventReportPerformance implements Serializable {
     private Double totalScore;
 
     public Long getEffectNumber() {
-        return getLongNumber(effectNumber);
+        return getLongWithDefaultValue(effectNumber);
     }
 
     public Double getEffectScore() {
-        return getDoubleScore(effectScore);
+        return getDoubleWithDefaultValue(effectScore);
     }
 
     public Long getDynamicNumber() {
-        return getLongNumber(dynamicNumber);
+        return getLongWithDefaultValue(dynamicNumber);
     }
 
     public Double getDynamicScore() {
-        return getDoubleScore(dynamicScore);
+        return getDoubleWithDefaultValue(dynamicScore);
     }
 
     public Long getNdEffectiveNumber() {
-        return getLongNumber(ndEffectiveNumber);
+        return getLongWithDefaultValue(ndEffectiveNumber);
     }
 
     public Long getOtherNumber() {
-        return getLongNumber(otherNumber);
+        return getLongWithDefaultValue(otherNumber);
     }
 
     public Long getTotalNumber() {
-        return getLongNumber(totalNumber);
+        return getLongWithDefaultValue(totalNumber);
     }
 
     public Double getTotalScore() {
-        return getDoubleScore(totalScore);
+        return getDoubleWithDefaultValue(totalScore);
     }
 }

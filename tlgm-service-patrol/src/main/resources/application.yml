@@ -1,0 +1,101 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: tlgm-service-patrol
+  http:
+    encoding:
+      charset: UTF-8
+      force: true
+      enabled: true
+
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    default-property-inclusion: non_null
+
+  datasource:
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    tomcat:
+      max-active: 50
+      max-wait: 30000
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      initial-size: 5
+      min-idle: 5
+      max-idle: 20
+      time-between-eviction-runs-millis: 30000
+      min-evictable-idle-time-millis: 60000
+      remove-abandoned-timeout: 180
+      validation-query: "SELECT 1 FROM DUAL"
+      validation-query-timeout: 60
+
+mybatis:
+  mapper-locations: classpath:mybatis/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+
+---
+#dev
+spring:
+  profiles: dev
+  datasource:
+    url: jdbc:oracle:thin:@10.0.30.197:1521:cetiti
+    username: tlgm_v3
+    password: 123456
+
+logging:
+  level:
+    root: debug
+    org.mybatis: debug
+    org.springframework: info
+    org.springframework.jdbc: info
+
+---
+#prod
+spring:
+  profiles: prod
+  datasource:
+    url: jdbc:oracle:thin:@10.33.108.32:1521:orcl
+    username: tlgm
+    password: 123321tlgm
+
+logging:
+  level:
+    root: info
+    org.mybatis: info
+    org.springframework: info
+    org.springframework.jdbc: info
+
+---
+#demonstrate
+spring:
+  profiles: demonstrate
+  datasource:
+    url: jdbc:oracle:thin:@10.0.30.206:1521:cetiti
+    username: tlgm
+    password: 123321tlgm
+
+logging:
+  level:
+    root: info
+    org.mybatis: info
+    org.springframework: info
+    org.springframework.jdbc: info
+
+---
+#test
+spring:
+  profiles: test
+  datasource:
+    url: jdbc:oracle:thin:@10.0.30.119:1521:cetiti
+    username: tlgm
+    password: 123456
+
+logging:
+  level:
+    root: info
+    org.mybatis: info
+    org.springframework: info
+    org.springframework.jdbc: info

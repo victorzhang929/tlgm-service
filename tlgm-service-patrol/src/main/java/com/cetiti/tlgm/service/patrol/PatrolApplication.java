@@ -12,7 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @date 2018-07-17 16:42:08
  */
 @SpringBootApplication(scanBasePackages = {"com.cetiti.tlgm.service.common.*","com.cetiti.tlgm.service.patrol.*"})
-@MapperScan("com.cetiti.tlgm.service.patrol.mapper")
+@MapperScan("com.cetiti.tlgm.service.common.mapper")
 public class PatrolApplication {
 
     public static void main(String[] args) {

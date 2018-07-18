@@ -31,10 +31,10 @@ public interface OracleOperationMapper {
     Timestamp getAfterMonthFirstDay() throws Exception;
 
     /**
-     * 获取数据库当前月份时间
+     * 获取数据库当前天数前一天
      * @return
      * @throws Exception
      */
-    @Select("SELECT TO_CHAR(SYSDATE, 'YYYY-MM') FROM DUAL")
-    String getCurrentMonth() throws Exception;
+    @Select("SELECT TO_CHAR(SYSDATE - 1, 'YYYY-MM-DD') FROM DUAL")
+    String getTheDayBeforeToday() throws Exception;
 }

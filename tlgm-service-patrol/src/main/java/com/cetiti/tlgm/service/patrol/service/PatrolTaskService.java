@@ -11,6 +11,7 @@ public interface PatrolTaskService {
 
     /**
      * 保存专职网格员每天的巡查时长和里程
+     * @throws Exception
      */
-    void insertPatrolDurationAndMileage();
+    void insertPatrolDurationAndMileage() throws Exception;
 }

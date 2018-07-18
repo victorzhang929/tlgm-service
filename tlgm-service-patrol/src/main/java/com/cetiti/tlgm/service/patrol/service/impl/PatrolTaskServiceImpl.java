@@ -1,8 +1,25 @@
 package com.cetiti.tlgm.service.patrol.service.impl;
 
+import java.math.BigDecimal;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.TimeUnit;
+
+import com.cetiti.tlgm.service.common.constant.PatrolConstant;
+import com.cetiti.tlgm.service.common.mapper.GridCommunityTownshipMapper;
+import com.cetiti.tlgm.service.common.mapper.PatrolTaskMapper;
+import com.cetiti.tlgm.service.common.model.patrol.DurationMileageDTO;
+import com.cetiti.tlgm.service.common.model.patrol.GridMemberPatrol;
 import com.cetiti.tlgm.service.patrol.service.PatrolTaskService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import static com.cetiti.tlgm.service.common.util.CommonUtil.getDistance;
+import static com.cetiti.tlgm.service.common.util.CommonUtil.getTimeInterval;
 
 /**
  * 巡查业务接口实现类
@@ -15,9 +32,50 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class PatrolTaskServiceImpl implements PatrolTaskService {
 
+    @Autowired
+    private PatrolTaskMapper patrolTaskMapper;
+
+    @Autowired
+    private GridCommunityTownshipMapper gridCommunityTownshipMapper;
 
     @Override
-    public void insertPatrolDurationAndMileage() {
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public void insertPatrolDurationAndMileage() throws Exception {
+        long startTime = System.currentTimeMillis();
+        List<GridMemberPatrol> gridMemberPatrols = patrolTaskMapper.listGridMemberPatrol();
 
+        //计算时长和里程
+        for (GridMemberPatrol gridMemberPatrol : gridMemberPatrols) {
+            if (gridMemberPatrol.getUserId().compareTo(new BigDecimal(9931)) == 0) {
+                System.out.println("hello");
+            }
+            List<DurationMileageDTO> durationMileages = new LinkedList<>(patrolTaskMapper.listTimeAndLocation(gridMemberPatrol.getUserId()));
+            int size = durationMileages.size();
+            double duration = 0.0;
+            double mileage = 0.0;
+            for (int i = size - 1; i > 0; i--) {
+                double interval = getTimeInterval(durationMileages.get(i).getPatrolTime(), durationMileages.get(i - 1).getPatrolTime());
+                if ( interval <= PatrolConstant.ONLINE_TIME_STANDARD) {
+                    duration += interval;
+                }
+                mileage += getDistance(durationMileages.get(i).getLongitude(), durationMileages.get(i).getLatitude(),
+                        durationMileages.get(i-1).getLongitude(), durationMileages.get(i-1).getLatitude());
+            }
+            gridMemberPatrol.fixAllName(gridCommunityTownshipMapper);
+            gridMemberPatrol.setDuration(duration);
+            gridMemberPatrol.setMileage(mileage);
+        }
+
+        //批量插入数据库
+        if (!gridMemberPatrols.isEmpty()) {
+            ForkJoinPool pool = new ForkJoinPool();
+            pool.submit(new MultiThreadPatrolOperation(0, gridMemberPatrols.size(), gridMemberPatrols, patrolTaskMapper));
+            pool.awaitTermination(1, TimeUnit.SECONDS);
+        }
+        System.out.println(System.currentTimeMillis() - startTime);
     }
+
+
+
+
 }

@@ -3,11 +3,12 @@ package com.cetiti.tlgm.service.common.model.performance;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import com.cetiti.tlgm.service.common.model.GridCommunityTownship;
 import com.cetiti.tlgm.service.common.model.performance.quota.BasicDataMaintenancePerformance;
 import com.cetiti.tlgm.service.common.model.performance.quota.DynamicEventReportPerformance;
 import lombok.Data;
 
-import static com.cetiti.tlgm.service.common.CommonUtil.getDoubleScore;
+import static com.cetiti.tlgm.service.common.util.CommonUtil.getDoubleWithDefaultValue;
 
 /**
  * 专职网格员绩效模型
@@ -34,6 +35,6 @@ public class GridMemberPerformance extends GridCommunityTownship implements Seri
     }
 
     public Double getTotalScore() {
-        return getDoubleScore(totalScore);
+        return getDoubleWithDefaultValue(totalScore);
     }
 }

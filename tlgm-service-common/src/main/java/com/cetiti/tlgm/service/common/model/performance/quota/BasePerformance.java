@@ -6,11 +6,11 @@ import java.math.BigDecimal;
 import com.cetiti.tlgm.service.common.mapper.PerformanceTaskMapper;
 import lombok.Data;
 
-import static com.cetiti.tlgm.service.common.CommonUtil.getDoubleScore;
-import static com.cetiti.tlgm.service.common.CommonUtil.getLongNumber;
 import static com.cetiti.tlgm.service.common.constant.PerformanceConstant.CHECK_WEIGHT;
 import static com.cetiti.tlgm.service.common.constant.PerformanceConstant.INCREASE_WEIGHT;
 import static com.cetiti.tlgm.service.common.constant.PerformanceConstant.MODIFICATION_WEIGHT;
+import static com.cetiti.tlgm.service.common.util.CommonUtil.getDoubleWithDefaultValue;
+import static com.cetiti.tlgm.service.common.util.CommonUtil.getLongWithDefaultValue;
 
 /**
  * 基础数据维护绩效基类模型
@@ -47,19 +47,19 @@ public class BasePerformance implements Serializable{
     }
 
     public Long getIncreaseNum() {
-        return getLongNumber(increaseNum);
+        return getLongWithDefaultValue(increaseNum);
     }
 
     public Long getModificationNum() {
-        return getLongNumber(modificationNum);
+        return getLongWithDefaultValue(modificationNum);
     }
 
     public Long getCheckNum() {
-        return getLongNumber(checkNum);
+        return getLongWithDefaultValue(checkNum);
     }
 
     public Double getTotalScore() {
-        return getDoubleScore(totalScore);
+        return getDoubleWithDefaultValue(totalScore);
     }
 
     protected void  calcTotalScore() {
