@@ -44,10 +44,7 @@ public class PatrolTaskServiceImpl implements PatrolTaskService {
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void insertPatrolDurationAndMileage() throws Exception {
         String currentPatrolTableName = getCurrentMonthPatrolTableName();
-        if (!checkPatrolTableExist(currentPatrolTableName)) {
-            //若表不存在则创建
-            patrolTaskMapper.createPatrolTable(currentPatrolTableName);
-        }
+        checkIfPatrolTableNotExistCreate(currentPatrolTableName);
 
         List<GridMemberPatrol> gridMemberPatrols = patrolTaskMapper.listGridMemberPatrol();
         //计算时长和里程
@@ -91,11 +88,10 @@ public class PatrolTaskServiceImpl implements PatrolTaskService {
      * @return
      * @throws Exception
      */
-    private boolean checkPatrolTableExist(String currentPatrolTableName) throws Exception {
+    private void checkIfPatrolTableNotExistCreate(String currentPatrolTableName) throws Exception {
         int count = oracleOperationMapper.checkTableExistByTableName(currentPatrolTableName);
-        if (count > 0) {
-            return true;
+        if (count <= 0) {
+            patrolTaskMapper.createPatrolTable(currentPatrolTableName);
         }
-        return false;
     }
 }
