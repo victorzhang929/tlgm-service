@@ -73,12 +73,14 @@ public class CommonUtil {
         URL url = new URL(urlStr);
         URLConnection connection = url.openConnection();
         connection.setDoOutput(true);
+        connection.setConnectTimeout(30000);
+        connection.setReadTimeout(30000);
         OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
 
         writer.write(param);
         writer.flush();
 
-        StringBuffer answer = new StringBuffer();
+        StringBuilder answer = new StringBuilder();
         BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
         String line;

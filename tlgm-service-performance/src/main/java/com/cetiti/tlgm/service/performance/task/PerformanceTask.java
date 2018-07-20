@@ -35,6 +35,7 @@ public class PerformanceTask {
             performanceTaskService.insertFullTimeGridMembersPerMonth();
             log.info("{}, day one insert operation end", INSERT_SUCCESS);
         } catch (Exception e) {
+            log.info("hour update operation exception");
             log.error(INSERT_FAIL, e);
         }
     }
@@ -49,6 +50,7 @@ public class PerformanceTask {
             performanceTaskService.updateFullTimeGridMembersPerHour();
             log.info("{}, hour update operation end", UPDATE_SUCCESS);
         } catch (Exception e) {
+            log.info("hour update operation exception");
             log.error(UPDATE_FAIL, e);
         }
     }
