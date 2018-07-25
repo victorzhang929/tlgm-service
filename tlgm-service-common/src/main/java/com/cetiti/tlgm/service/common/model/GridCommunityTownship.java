@@ -2,10 +2,9 @@ package com.cetiti.tlgm.service.common.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.sql.SQLException;
 
-import com.cetiti.tlgm.service.common.util.CommonUtil;
 import com.cetiti.tlgm.service.common.mapper.GridCommunityTownshipMapper;
+import com.cetiti.tlgm.service.common.util.CommonUtil;
 import lombok.Data;
 
 import static com.cetiti.tlgm.service.common.constant.GridCommunityTownshipConstant.COMMUNITY_ID_LENGTH;
@@ -43,7 +42,7 @@ public class GridCommunityTownship implements Serializable {
         }
     }
 
-    public void fixAllName(GridCommunityTownshipMapper gridCommunityTownshipMapper) throws SQLException {
+    public void fixAllName(GridCommunityTownshipMapper gridCommunityTownshipMapper) throws Exception {
         this.setGridName(gridCommunityTownshipMapper.getNameById(this.gridId));
         this.setCommunityName(gridCommunityTownshipMapper.getNameById(this.communityId));
         this.setTownshipName(gridCommunityTownshipMapper.getNameById(this.townshipId));

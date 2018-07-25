@@ -1,7 +1,6 @@
 package com.cetiti.tlgm.service.common.mapper;
 
 import java.math.BigDecimal;
-import java.sql.SQLException;
 
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
@@ -19,8 +18,8 @@ public interface GridCommunityTownshipMapper {
      * 根据id查出名称
      * @param id
      * @return
-     * @throws SQLException
+     * @throws Exception
      */
     @Select("SELECT NAME FROM grid_info where id = #{id}")
-    String getNameById(BigDecimal id) throws SQLException;
+    String getNameById(BigDecimal id) throws Exception;
 }

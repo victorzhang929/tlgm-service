@@ -6,6 +6,7 @@ import java.util.List;
 import com.cetiti.tlgm.service.common.model.patrol.DurationMileageDTO;
 import com.cetiti.tlgm.service.common.model.patrol.GridMemberPatrol;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -17,6 +18,14 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface PatrolTaskMapper {
+
+    /**
+     * 查询昨日日期
+     * @return
+     * @throws Exception
+     */
+    @Select("SELECT TO_CHAR(SYSDATE - 1, 'YYYY-MM-DD') FROM DUAL")
+    String getTheDayBeforeToday() throws Exception;
 
     /**
      * 查询当前专职网格员巡查信息
