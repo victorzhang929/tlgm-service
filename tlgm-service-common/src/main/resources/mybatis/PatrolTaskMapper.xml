@@ -42,11 +42,11 @@
         BEGIN
         <foreach collection="gridMemberPatrols" item="patrol" index="index" separator="">
             INSERT INTO ${tableName} (ID, USER_ID, LOGINNAME, NAME, DURATION, MILEAGE, CREATE_TIME, MODIFIED_TIME,
-            GRID_ID, GRID_NAME, COMMUNITY_ID, COMMUNITY_NAME, TOWNSHIP_ID, TOWNSHIP_NAME) VALUES
+            GRID_ID, GRID_NAME, COMMUNITY_ID, COMMUNITY_NAME, TOWNSHIP_ID, TOWNSHIP_NAME, RECORD_DATE) VALUES
             (SEQ_PATROL_ID.NEXTVAL, #{patrol.userId}, #{patrol.loginname, jdbcType=VARCHAR}, #{patrol.name, jdbcType=VARCHAR},
             #{patrol.duration}, #{patrol.mileage}, SYSDATE, SYSDATE, #{patrol.gridId, jdbcType=DECIMAL}, #{patrol.gridName, jdbcType=VARCHAR},
             #{patrol.communityId, jdbcType=DECIMAL}, #{patrol.communityName, jdbcType=VARCHAR}, #{patrol.townshipId, jdbcType=DECIMAL},
-            #{patrol.townshipName, jdbcType=VARCHAR});
+            #{patrol.townshipName, jdbcType=VARCHAR}, TO_DATE(<include refid="getTheDayBeforeToday"/>, 'yyyy-MM-dd'));
         </foreach>
         COMMIT;
         END;
@@ -67,7 +67,8 @@
           COMMUNITY_ID NUMBER(20),
           COMMUNITY_NAME VARCHAR2(80),
           TOWNSHIP_ID NUMBER(20),
-          TOWNSHIP_NAME VARCHAR2(80)
+          TOWNSHIP_NAME VARCHAR2(80),
+          RECORD_DATE DATE NOT NULL
         )
     </update>
 </mapper>
