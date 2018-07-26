@@ -53,7 +53,7 @@
     
     <delete id="batchDeleteUserIds">
         DELETE FROM T_PERFORMANCE
-        WHERE TO_CHAR(CREATE_TIME,'YYYY-MM') = #{currentMonth} AND USER_ID IN
+        WHERE TO_CHAR(CREATE_TIME,'YYYY-MM') = <include refid="getCurrentMonth"/> AND USER_ID IN
         <foreach collection="userIds" index="index" item="userId" open="(" close=")" separator=",">
             #{userId}
         </foreach>
