@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 /**
  * 三级网格数据访问接口
+ *
  * @author zhangwei
  * @email zhangwei@cetiti.com
  * @date 2018-06-27 15:33:24
@@ -16,9 +17,10 @@ public interface GridCommunityTownshipMapper {
 
     /**
      * 根据id查出名称
-     * @param id
-     * @return
-     * @throws Exception
+     *
+     * @param id 网格ID
+     * @return 网格名称
+     * @throws Exception 抛出异常信息
      */
     @Select("SELECT NAME FROM grid_info where id = #{id}")
     String getNameById(BigDecimal id) throws Exception;

@@ -7,7 +7,10 @@ package com.cetiti.tlgm.service.common.constant;
  * @email zhangwei@cetiti.com
  * @date 2018-06-27 11:08:05
  */
-public class DatabaseConstant {
+public final class DatabaseConstant {
+
+    private DatabaseConstant() {
+    }
 
     /**
      * 有效数据

@@ -7,7 +7,11 @@ package com.cetiti.tlgm.service.common.constant;
  * @email zhangwei@cetiti.com
  * @date 2018-06-27 11:15:04
  */
-public class MsgConstant {
+public final class MsgConstant {
+
+    private MsgConstant() {
+    }
+
     public static final String INSERT_SUCCESS = "添加成功";
     public static final String INSERT_FAIL = "添加失败";
     public static final String CREATE_TABLE_SUCCESS = "创建表成功";

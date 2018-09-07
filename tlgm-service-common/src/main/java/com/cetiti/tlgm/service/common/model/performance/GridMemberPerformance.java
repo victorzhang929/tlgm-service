@@ -12,12 +12,13 @@ import static com.cetiti.tlgm.service.common.util.CommonUtil.getDoubleWithDefaul
 
 /**
  * 专职网格员绩效模型
+ *
  * @author zhangwei
  * @email zhangwei@cetiti.com
  * @date 2018-06-27 15:38:01
  */
 @Data
-public class GridMemberPerformance extends GridCommunityTownship implements Serializable{
+public class GridMemberPerformance extends GridCommunityTownship implements Serializable {
 
     private BigDecimal id;
     private BigDecimal userId;

@@ -30,9 +30,9 @@ public class CommonUtil {
     /**
      * 获得下一层网格标识，镇街和村社才有下层网格
      *
-     * @param position
-     * @param number
-     * @return
+     * @param position 网格标识
+     * @param number   网格长度
+     * @return 下层网格标识
      */
     public static BigDecimal getSubDecimal(Integer position, BigDecimal number) {
         if (null == number) {
@@ -50,8 +50,8 @@ public class CommonUtil {
     /**
      * 计算number长度，如果为空返回-999_999
      *
-     * @param number
-     * @return
+     * @param number 数字
+     * @return 计算数字长度
      */
     public static int getBigDecimalLength(BigDecimal number) {
         if (null == number) {
@@ -66,8 +66,8 @@ public class CommonUtil {
      *
      * @param urlStr 地址
      * @param param  变量
-     * @return
-     * @throws IOException
+     * @return 相应数据
+     * @throws IOException 抛出异常信息
      */
     public static String sendPostRequest(String urlStr, String param) throws IOException {
         URL url = new URL(urlStr);
@@ -97,8 +97,8 @@ public class CommonUtil {
     /**
      * 获取Long类型的数目，null和小于0的值返回0L
      *
-     * @param number
-     * @return
+     * @param number 数值
+     * @return 处理后数值
      */
     public static Long getLongWithDefaultValue(Long number) {
         if (null == number || number < 0L) {
@@ -110,8 +110,8 @@ public class CommonUtil {
     /**
      * 获取Double类型的分数，null和小于0.0的值返回0.0
      *
-     * @param score
-     * @return
+     * @param score 分数
+     * @return 处理后数据
      */
     public static Double getDoubleWithDefaultValue(Double score) {
         if (null == score || score < 0.0) {
@@ -149,9 +149,9 @@ public class CommonUtil {
     /**
      * 计算两个时间相差的小时数
      *
-     * @param endTime
-     * @param startTime
-     * @return
+     * @param endTime 结束时间
+     * @param startTime 开始时间
+     * @return 两个时间差值
      */
     public static double getTimeInterval(Date endTime, Date startTime) {
         double interval = (endTime.getTime() - startTime.getTime()) / (3600 * 1000.0);

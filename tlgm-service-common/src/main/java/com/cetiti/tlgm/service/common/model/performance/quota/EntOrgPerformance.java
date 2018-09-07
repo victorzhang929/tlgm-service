@@ -16,7 +16,8 @@ import static com.cetiti.tlgm.service.common.constant.PerformanceConstant.ENT_OR
  */
 public class EntOrgPerformance extends BasePerformance implements Serializable {
 
-    public EntOrgPerformance() {}
+    public EntOrgPerformance() {
+    }
 
     public EntOrgPerformance(PerformanceTaskMapper performanceTaskMapper, BigDecimal userId) throws Exception {
         countPerformance(performanceTaskMapper, userId, ENT_ORG);

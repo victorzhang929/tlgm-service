@@ -18,7 +18,11 @@ import java.util.regex.Pattern;
  * @email zhangwei@cetiti.com
  * @date 2018-07-25 15:31:41
  */
-public class ChineseCalendarUtil {
+public final class ChineseCalendarUtil {
+
+    private ChineseCalendarUtil() {
+
+    }
 
     /**
      * 2018年法定节假日
@@ -43,9 +47,9 @@ public class ChineseCalendarUtil {
     /**
      * 判断是否为法定节假日
      *
-     * @param calendar
-     * @return
-     * @throws Exception
+     * @param calendar 日期
+     * @return 是否法定节假日
+     * @throws Exception 抛出异常信息
      */
     public static boolean isLawHoliday(String calendar) throws Exception {
         isMatchDateFormat(calendar);
@@ -58,9 +62,9 @@ public class ChineseCalendarUtil {
     /**
      * 判断是否为周末
      *
-     * @param calendar
-     * @return
-     * @throws Exception
+     * @param calendar 日期
+     * @return 是否为周末
+     * @throws Exception 抛出异常信息
      */
     public static boolean isWeekends(String calendar) throws Exception {
         isMatchDateFormat(calendar);
@@ -78,9 +82,9 @@ public class ChineseCalendarUtil {
     /**
      * 判断是否为额外补班的工作日
      *
-     * @param calendar
-     * @return
-     * @throws Exception
+     * @param calendar 日期
+     * @return 是否为额外补班工作日
+     * @throws Exception 抛出异常信息
      */
     public static boolean isExtraWorkday(String calendar) throws Exception {
         isMatchDateFormat(calendar);
@@ -93,9 +97,9 @@ public class ChineseCalendarUtil {
     /**
      * 判断是否是工作日
      *
-     * @param calendar
-     * @return
-     * @throws Exception
+     * @param calendar 日期
+     * @return 是否为工作日
+     * @throws Exception 抛出异常信息
      */
     public static boolean isWorkday(String calendar) throws Exception {
         isMatchDateFormat(calendar);
@@ -118,7 +122,7 @@ public class ChineseCalendarUtil {
      * 正则表达式判断是否是合理的日期格式，若不是则抛出异常
      *
      * @param calendar 日期yyyy-MM-dd
-     * @throws Exception
+     * @throws Exception 抛出异常信息
      */
     private static void isMatchDateFormat(String calendar) throws Exception {
         Matcher matcher = pattern.matcher(calendar);

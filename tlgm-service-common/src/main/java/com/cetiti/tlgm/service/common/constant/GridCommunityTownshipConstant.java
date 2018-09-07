@@ -7,7 +7,10 @@ package com.cetiti.tlgm.service.common.constant;
  * @email zhangwei@cetiti.com
  * @date 2018-06-27 11:11:17
  */
-public class GridCommunityTownshipConstant {
+public final class GridCommunityTownshipConstant {
+
+    private GridCommunityTownshipConstant() {
+    }
 
     /**
      * 网格ID长度

@@ -16,7 +16,8 @@ import static com.cetiti.tlgm.service.common.constant.PerformanceConstant.REAL_P
  */
 public class RealPopulationPerformance extends BasePerformance implements Serializable {
 
-    public RealPopulationPerformance() {}
+    public RealPopulationPerformance() {
+    }
 
     public RealPopulationPerformance(PerformanceTaskMapper performanceTaskMapper, BigDecimal userId) throws Exception {
         countPerformance(performanceTaskMapper, userId, REAL_POPULATION);

@@ -17,7 +17,8 @@ import static com.cetiti.tlgm.service.common.constant.PerformanceConstant.RESIDE
  */
 public class ResidencePerformance extends BasePerformance implements Serializable {
 
-    public ResidencePerformance() {}
+    public ResidencePerformance() {
+    }
 
     public ResidencePerformance(PerformanceTaskMapper performanceTaskMapper, BigDecimal userId) throws Exception {
         countPerformance(performanceTaskMapper, userId, RESIDENCE);

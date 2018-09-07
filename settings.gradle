@@ -1,4 +1,4 @@
-rootProject.name = 'tlgm-service'
+rootProject.name = 'vz-tlgm-service'
 include 'tlgm-service-common'
 include 'tlgm-service-performance'
 include 'tlgm-service-patrol'

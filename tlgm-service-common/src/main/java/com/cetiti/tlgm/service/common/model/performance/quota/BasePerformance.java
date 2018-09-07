@@ -14,26 +14,29 @@ import static com.cetiti.tlgm.service.common.util.CommonUtil.getLongWithDefaultV
 
 /**
  * 基础数据维护绩效基类模型
+ *
  * @author zhangwei
  * @email zhangwei@cetiti.com
  * @date 2018-06-28 17:09:52
  */
 @Data
-public class BasePerformance implements Serializable{
+public class BasePerformance implements Serializable {
 
     protected Long increaseNum = 0L;
     protected Long modificationNum = 0L;
     protected Long checkNum = 0L;
     protected Double totalScore = 0.0;
 
-    public BasePerformance(){}
+    public BasePerformance() {
+    }
 
     /**
      * 计算模块列表的当前月份绩效信息
-     * @param performanceTaskMapper
-     * @param userId
-     * @param moduleTypes
-     * @throws Exception
+     *
+     * @param performanceTaskMapper 数据处理层接口
+     * @param userId                专职网格员ID
+     * @param moduleTypes           模块类型
+     * @throws Exception 抛出异常信息
      */
     protected void countPerformance(PerformanceTaskMapper performanceTaskMapper, BigDecimal userId, int[] moduleTypes)
             throws Exception {
@@ -62,7 +65,7 @@ public class BasePerformance implements Serializable{
         return getDoubleWithDefaultValue(totalScore);
     }
 
-    protected void  calcTotalScore() {
+    protected void calcTotalScore() {
         totalScore = getIncreaseNum() * INCREASE_WEIGHT + getModificationNum() * MODIFICATION_WEIGHT + checkNum * CHECK_WEIGHT;
     }
 }

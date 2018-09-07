@@ -7,7 +7,11 @@ package com.cetiti.tlgm.service.common.constant;
  * @email zhangwei@cetiti.com
  * @date 2018-06-27 11:13:14
  */
-public class ModuleConstant {
+public final class ModuleConstant {
+
+    private ModuleConstant() {
+    }
+
     public static final int SCHOOL = 1;
     public static final int ENTERPRISE = 2;
     public static final int SUBSTATION = 3;

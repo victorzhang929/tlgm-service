@@ -16,7 +16,8 @@ import static com.cetiti.tlgm.service.common.constant.PerformanceConstant.KEY_FA
  */
 public class KeyFacilitiesPerformance extends BasePerformance implements Serializable {
 
-    public KeyFacilitiesPerformance() {}
+    public KeyFacilitiesPerformance() {
+    }
 
     public KeyFacilitiesPerformance(PerformanceTaskMapper performanceTaskMapper, BigDecimal userId) throws Exception {
         countPerformance(performanceTaskMapper, userId, KEY_FACILITIES);

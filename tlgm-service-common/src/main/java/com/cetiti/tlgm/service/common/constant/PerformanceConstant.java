@@ -17,11 +17,15 @@ import static com.cetiti.tlgm.service.common.constant.ModuleConstant.SUBSTATION;
 
 /**
  * 绩效常量
+ *
  * @author zhangwei
  * @email zhangwei@cetiti.com
  * @date 2018-06-27 14:46:15
  */
-public class PerformanceConstant {
+public final class PerformanceConstant {
+
+    private PerformanceConstant() {
+    }
 
     /**
      * 绩效新增权重

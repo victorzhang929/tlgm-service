@@ -21,8 +21,8 @@ public interface PerformanceTaskMapper {
     /**
      * 查询当月专职网格员的绩效基本信息
      *
-     * @return
-     * @throws Exception
+     * @return 当月网格员绩效信息
+     * @throws Exception 抛出异常信息
      */
     List<GridMemberPerformance> listGridMemberPerformance() throws Exception;
 
@@ -30,7 +30,7 @@ public interface PerformanceTaskMapper {
      * 插入当月专职网格员信息入绩效表，无绩效信息，表设计中绩效字段默认值0
      *
      * @param gridMemberPerformance 专职网格员绩效基本信息
-     * @throws Exception
+     * @throws Exception 抛出异常信息
      */
     void insertWithoutPerformance(GridMemberPerformance gridMemberPerformance) throws Exception;
 
@@ -39,8 +39,8 @@ public interface PerformanceTaskMapper {
      *
      * @param userId     专职网格员id
      * @param moduleType 模块名称
-     * @return
-     * @throws Exception
+     * @return 专职网格员当月绩效项数量
+     * @throws Exception 抛出异常信息
      */
     BasePerformance countPerformance(@Param("userId") BigDecimal userId,
                                      @Param("moduleType") int moduleType) throws Exception;
@@ -48,8 +48,8 @@ public interface PerformanceTaskMapper {
     /**
      * 列出当月绩效表专职网格员id
      *
-     * @return
-     * @throws Exception
+     * @return 当月在职专职网格员ID
+     * @throws Exception 抛出异常信息
      */
     List<BigDecimal> listCurrentMonthUserId() throws Exception;
 
@@ -57,7 +57,7 @@ public interface PerformanceTaskMapper {
      * 根据userIds批量删除
      *
      * @param userIds 待删除userIds集合
-     * @throws Exception
+     * @throws Exception 抛出异常信息
      */
     void batchDeleteUserIds(@Param("userIds") List<BigDecimal> userIds) throws Exception;
 
@@ -65,7 +65,7 @@ public interface PerformanceTaskMapper {
      * 插入或者更新
      *
      * @param gridMemberPerformance 绩效
-     * @throws Exception
+     * @throws Exception 抛出异常信息
      */
     void saveOrUpdate(GridMemberPerformance gridMemberPerformance) throws Exception;
 }

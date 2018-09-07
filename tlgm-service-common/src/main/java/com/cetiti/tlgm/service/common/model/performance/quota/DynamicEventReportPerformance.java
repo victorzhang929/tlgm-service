@@ -9,6 +9,7 @@ import static com.cetiti.tlgm.service.common.util.CommonUtil.getLongWithDefaultV
 
 /**
  * 动态事件上报模型
+ *
  * @author zhangwei
  * @email zhangwei@cetiti.com
  * @date 2018-06-28 16:23:55
