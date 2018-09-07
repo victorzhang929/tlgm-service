@@ -57,7 +57,7 @@ public class PatrolTaskServiceImpl implements PatrolTaskService {
     /**
      * 处理在线时长和里程计算统计工作
      *
-     * @throws Exception
+     * @throws Exception 抛出异常信息
      */
     private void handlerPatrolDurationAndMileage() throws Exception {
         //当前月表名
@@ -94,8 +94,8 @@ public class PatrolTaskServiceImpl implements PatrolTaskService {
     /**
      * 获取当前月份表名
      *
-     * @return
-     * @throws Exception
+     * @return 当月表名
+     * @throws Exception 抛出异常信息
      */
     private String getCurrentMonthPatrolTableName() throws Exception {
         return PATROL_TABLE_NAME + oracleOperationMapper.getCurrentMonth();
@@ -104,8 +104,7 @@ public class PatrolTaskServiceImpl implements PatrolTaskService {
     /**
      * 检查当月巡查表是否存在，若不存在创建
      *
-     * @return
-     * @throws Exception
+     * @throws Exception 抛出异常信息
      */
     private void checkIfPatrolTableNotExistCreate(String currentPatrolTableName) throws Exception {
         int count = oracleOperationMapper.checkTableExistByTableName(currentPatrolTableName);
