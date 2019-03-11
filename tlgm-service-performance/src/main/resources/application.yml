@@ -41,9 +41,9 @@ mybatis:
 spring:
   profiles: dev
   datasource:
-    url: jdbc:oracle:thin:@10.0.30.197:1521:cetiti
-    username: tlgm_v3
-    password: 123456
+    url: 
+    username: 
+    password: 
 
 logging:
   level:
@@ -57,9 +57,9 @@ logging:
 spring:
   profiles: prod
   datasource:
-    url: jdbc:oracle:thin:@10.33.108.32:1521:orcl
-    username: tlgm
-    password: 123321tlgm
+    url: 
+    username: 
+    password: 
 
 logging:
   level:
@@ -73,9 +73,9 @@ logging:
 spring:
   profiles: demonstrate
   datasource:
-    url: jdbc:oracle:thin:@10.0.30.206:1521:cetiti
-    username: tlgm
-    password: 123321tlgm
+    url: 
+    username: 
+    password: 
 
 logging:
   level:
@@ -89,9 +89,9 @@ logging:
 spring:
   profiles: test
   datasource:
-    url: jdbc:oracle:thin:@10.0.30.119:1521:cetiti
-    username: tlgm
-    password: 123456
+    url: 
+    username: 
+    password: 
 
 logging:
   level:
